@@ -8,6 +8,7 @@ public static class ServicesInjection
     public static void AddWebServices(this IServiceCollection services)
     {
         services.AddDefaultServices();
+        services.AddExceptionHandler();
         services.AddSwaggerService();
         services.AddCorsService();
     }

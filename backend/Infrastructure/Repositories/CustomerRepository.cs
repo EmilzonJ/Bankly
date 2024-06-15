@@ -15,6 +15,16 @@ public class CustomerRepository(MongoDbContext context) : ICustomerRepository
         return await _customers.Find(c => c.Id == id).FirstOrDefaultAsync();
     }
 
+    public async Task<Customer> GetByEmailAsync(string email)
+    {
+        return await _customers.Find(c => c.Email == email).FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> EmailExistsAsync(string email)
+    {
+        return await _customers.Find(c => c.Email == email).AnyAsync();
+    }
+
     public async Task<IEnumerable<Customer>> GetAllAsync()
     {
         return await _customers.Find(FilterDefinition<Customer>.Empty).ToListAsync();
