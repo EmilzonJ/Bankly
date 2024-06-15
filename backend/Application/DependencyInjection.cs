@@ -9,7 +9,7 @@ public static class DependencyInjection
     public static void AddApplicationServices(this IServiceCollection services)
     {
         Assembly currentAssembly = Assembly.LoadFrom(typeof(DependencyInjection).Assembly.Location);
-        services.AddMediator();
+        services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Transient);
         services.AddValidatorsFromAssembly(currentAssembly);
     }
 }
