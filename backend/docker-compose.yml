@@ -23,7 +23,7 @@
     ports:
       - "8000:27017"
     volumes:
-      - ./database-data:/data/db
+      - ./database:/data/db
     networks:
       - bankly-network
   bankly-db-dashboard:
