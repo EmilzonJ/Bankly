@@ -14,6 +14,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "Application.UnitTests\Application.UnitTests.csproj", "{2E855E23-E0EF-44DD-8D4B-99F7625E7A0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{5CAB5584-2156-4F7F-B43F-6BC2CC715813}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{57D9D582-3220-4750-AE5B-C391B0024F37}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +32,7 @@ Global
 		{CC56D539-FA36-4FCF-A0C7-3182B0FAF518} = {B310CF3B-D270-4B30-B8D6-CB3277648D62}
 		{2C43C509-CBB0-4A84-88D9-0F145E935ABE} = {B310CF3B-D270-4B30-B8D6-CB3277648D62}
 		{2E855E23-E0EF-44DD-8D4B-99F7625E7A0B} = {69042D4D-17CE-4E2E-AD2C-01FD33EE4119}
+		{5CAB5584-2156-4F7F-B43F-6BC2CC715813} = {B310CF3B-D270-4B30-B8D6-CB3277648D62}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0C02D19D-AA13-400B-9B17-CC3AA37B5DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -47,5 +55,9 @@ Global
 		{2E855E23-E0EF-44DD-8D4B-99F7625E7A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E855E23-E0EF-44DD-8D4B-99F7625E7A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E855E23-E0EF-44DD-8D4B-99F7625E7A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CAB5584-2156-4F7F-B43F-6BC2CC715813}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAB5584-2156-4F7F-B43F-6BC2CC715813}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CAB5584-2156-4F7F-B43F-6BC2CC715813}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAB5584-2156-4F7F-B43F-6BC2CC715813}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

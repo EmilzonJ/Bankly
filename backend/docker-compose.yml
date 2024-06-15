@@ -1,0 +1,48 @@
+﻿services:
+  bankly-api:
+    container_name: bankly-api
+    build:
+      context: .
+      dockerfile: Web/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - bankly-db
+    networks:
+      - bankly-network
+  bankly-db:
+    image: mongo:latest
+    container_name: bankly-db
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "8000:27017"
+    volumes:
+      - ./database-data:/data/db
+    networks:
+      - bankly-network
+  bankly-db-dashboard:
+    image: mongo-express:latest
+    container_name: bankly-db-dashboard
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_SERVER: bankly-db
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+    ports:
+      - "8001:8081"
+    networks:
+      - bankly-network
+
+networks:
+  bankly-network:
+    name: bankly-network
+
+volumes:
+  bankly-db:
+    driver: local
