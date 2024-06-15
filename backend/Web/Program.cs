@@ -1,7 +1,7 @@
 using Application;
 using Infrastructure;
 using Web;
-using Web.Config;
+using Web.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,9 +17,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(StaticSetting.CorsPolicyName);
+app.UseCors(StaticSettings.CorsPolicyName);
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler();
 
 app.UseAuthorization();
 

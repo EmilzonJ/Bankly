@@ -1,8 +1,9 @@
-using Web.Config;
+using Web.Infrastructure;
+using Web.Settings;
 
 namespace Web;
 
-public static class DependencyInjection
+public static class ServicesInjection
 {
     public static void AddWebServices(this IServiceCollection services)
     {
@@ -14,13 +15,18 @@ public static class DependencyInjection
     private static void AddDefaultServices(this IServiceCollection services)
     {
         services.AddControllers();
-
         services.Configure<RouteOptions>(options =>
             {
                 options.LowercaseUrls = true;
                 options.LowercaseQueryStrings = true;
             }
         );
+    }
+
+    private static void AddExceptionHandler(this IServiceCollection services)
+    {
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
     }
 
     private static void AddSwaggerService(this IServiceCollection services)
@@ -33,7 +39,7 @@ public static class DependencyInjection
     {
         services.AddCors(options =>
         {
-            options.AddPolicy(StaticSetting.CorsPolicyName,
+            options.AddPolicy(StaticSettings.CorsPolicyName,
                 b => b
                     .AllowAnyOrigin()
                     .AllowAnyMethod()

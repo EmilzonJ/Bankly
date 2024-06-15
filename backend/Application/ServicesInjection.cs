@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
-public static class DependencyInjection
+public static class ServicesInjection
 {
     public static void AddApplicationServices(this IServiceCollection services)
     {
-        Assembly currentAssembly = Assembly.LoadFrom(typeof(DependencyInjection).Assembly.Location);
+        Assembly currentAssembly = Assembly.LoadFrom(typeof(ServicesInjection).Assembly.Location);
         services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Transient);
         services.AddValidatorsFromAssembly(currentAssembly);
     }
