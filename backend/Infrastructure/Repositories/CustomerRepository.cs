@@ -17,7 +17,7 @@ public class CustomerRepository(MongoDbContext context) : ICustomerRepository
 
     public async Task<IEnumerable<Customer>> GetAllAsync()
     {
-        return await _customers.Find(_ => true).ToListAsync();
+        return await _customers.Find(FilterDefinition<Customer>.Empty).ToListAsync();
     }
 
     public async Task AddAsync(Customer customer)
