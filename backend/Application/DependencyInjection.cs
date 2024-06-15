@@ -6,12 +6,10 @@ namespace Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static void AddApplicationServices(this IServiceCollection services)
     {
         Assembly currentAssembly = Assembly.LoadFrom(typeof(DependencyInjection).Assembly.Location);
         services.AddMediator();
         services.AddValidatorsFromAssembly(currentAssembly);
-
-        return services;
     }
 }
