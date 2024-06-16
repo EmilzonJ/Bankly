@@ -1,9 +1,7 @@
 ﻿services:
   bankly-api:
     container_name: bankly-api
-    build:
-      context: .
-      dockerfile: Web/Dockerfile
+    image: ghcr.io/emilzonj/dotnet-backend:main
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=4000

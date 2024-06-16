@@ -23,4 +23,4 @@ RUN dotnet publish "Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAp
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "watch", "Web.dll"]
+ENTRYPOINT ["dotnet", "Web.dll"]
