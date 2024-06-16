@@ -9,6 +9,7 @@ namespace Infrastructure.Repositories;
 public class CustomerRepository(MongoDbContext context) : ICustomerRepository
 {
     private readonly IMongoCollection<Customer> _customers = context.Customers;
+    private readonly IMongoCollection<Account> _accounts = context.Accounts;
 
     public async Task<Customer?> GetByIdAsync(ObjectId id)
     {
@@ -43,5 +44,6 @@ public class CustomerRepository(MongoDbContext context) : ICustomerRepository
     public async Task DeleteAsync(ObjectId id)
     {
         await _customers.DeleteOneAsync(c => c.Id == id);
+        await _accounts.DeleteManyAsync(a => a.CustomerId == id);
     }
 }

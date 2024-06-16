@@ -12,6 +12,6 @@ public class GetCustomerByIdQueryHandler(
     {
         var customer = await customerRepository.GetByIdAsync(query.Id);
 
-        return customer?.ToResponse() ?? Result.Failure<CustomerResponse>(CustomerErrors.NotFound(query.Id.ToString()));
+        return customer?.ToResponse() ?? Result.Failure<CustomerResponse>(CustomerErrors.NotFound(query.Id));
     }
 }

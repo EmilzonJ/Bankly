@@ -47,6 +47,6 @@ public class GetCustomerByIdQueryHandlerTest
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().BeEquivalentTo(CustomerErrors.NotFound(customerId.ToString()));
+        result.Error.Should().BeEquivalentTo(CustomerErrors.NotFound(customerId));
     }
 }
