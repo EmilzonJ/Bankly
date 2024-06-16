@@ -1,8 +1,10 @@
 using Application.Extensions;
 using Application.Features.Customers.Commands;
+using Application.Features.Customers.Models.Filters;
 using Application.Features.Customers.Models.Requests;
 using Application.Features.Customers.Models.Responses;
 using Application.Features.Customers.Queries;
+using Application.Shared;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Web.Extensions;
@@ -13,10 +15,18 @@ public class CustomersController(ISender sender) : BaseController
 {
     [HttpGet]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CustomerResponse>))]
-    public async Task<IResult> GetAsync()
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedList<CustomerResponse>))]
+    public async Task<IResult> GetAsync([FromQuery] GetCustomersFilter filters)
     {
-        var result = await sender.Send(new GetCustomersQuery());
+        var query = new GetCustomersQuery(
+            filters.PageNumber,
+            filters.PageSize,
+            filters.Name,
+            filters.Email,
+            filters.RegisteredAt
+        );
+
+        var result = await sender.Send(query);
 
         return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
     }
