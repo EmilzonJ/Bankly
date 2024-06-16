@@ -6,11 +6,12 @@ namespace Domain.Contracts;
 public interface ICustomerRepository
 {
     Task<Customer?> GetByIdAsync(ObjectId id);
+    Task<bool> ExistsAsync(ObjectId id);
     Task<bool> EmailExistsAsync(string email);
     Task<IEnumerable<Customer>> GetAllAsync();
     Task AddAsync(Customer customer);
     Task UpdateAsync(Customer customer);
-    Task DeleteAsync(ObjectId id);
+    Task DeleteAsync(Customer customer);
 
     Task<int> CountAsync(
         string? name,

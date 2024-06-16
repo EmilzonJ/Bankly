@@ -7,7 +7,8 @@ public interface IAccountRepository
 {
     Task<Account> GetByIdAsync(ObjectId id);
     Task<IEnumerable<Account>> GetAllAsync();
+    Task<IEnumerable<Account>> GetAllByCustomerAsync(ObjectId customerId);
     Task AddAsync(Account account);
     Task UpdateAsync(Account account);
-    Task DeleteAsync(ObjectId id);
+    Task DeleteAsync(Account account);
 }

@@ -1,7 +1,6 @@
 using Application.Features.Customers.CommandHandlers;
 using Application.Features.Customers.Commands;
 using MongoDB.Bson;
-using NSubstitute.ReceivedExtensions;
 using NSubstitute.ReturnsExtensions;
 
 namespace Application.UnitTests.Features.Customers.Commands;
@@ -51,6 +50,6 @@ public class DeleteCustomerCommandHandlerTest
 
         await _customerRepositoryMock
             .Received(1)
-            .DeleteAsync(Arg.Is<ObjectId>(x => x == customerId));
+            .DeleteAsync(Arg.Is<Customer>(x => x == customer));
     }
 }

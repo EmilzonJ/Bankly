@@ -47,6 +47,22 @@ public class CustomersController(ISender sender) : BaseController
         return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
     }
 
+    [HttpGet("{id}/accounts")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CustomerAccountResponse>))]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IResult> GetAccountsAsync(string id)
+    {
+        var idParsed = id.ToObjectId();
+        if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
+
+        var result = await sender.Send(new GetCustomerAccountsQuery(idParsed.Value));
+
+        return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
+    }
+
     [HttpPost]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
@@ -56,6 +72,23 @@ public class CustomersController(ISender sender) : BaseController
     public async Task<IResult> PostAsync(CreateCustomerCommand command)
     {
         var result = await sender.Send(command);
+
+        return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
+    }
+
+    [HttpPost("{id}/accounts")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IResult> PostAccountAsync(string id, CreateCustomerAccountRequest request)
+    {
+        var idParsed = id.ToObjectId();
+        if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
+
+        var result = await sender.Send(new CreateCustomerAccountCommand(idParsed.Value, request.Balance));
 
         return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
     }

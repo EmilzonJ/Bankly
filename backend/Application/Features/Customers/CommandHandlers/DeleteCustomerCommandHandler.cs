@@ -13,7 +13,7 @@ public record DeleteCustomerCommandHandler(
         if(customer is null)
             return Result.Failure(CustomerErrors.NotFound(command.Id));
 
-        await CustomerRepository.DeleteAsync(command.Id);
+        await CustomerRepository.DeleteAsync(customer);
 
         return Result.Success();
     }

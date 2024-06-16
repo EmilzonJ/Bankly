@@ -13,7 +13,7 @@ public static class CustomerMapping
             Id = customer.Id.ToString(),
             Name = customer.Name,
             Email = customer.Email,
-            RegisteredAt = customer.RegisteredAt
+            RegisteredAt = customer.CreatedAt
         };
     }
 
@@ -27,8 +27,7 @@ public static class CustomerMapping
         return new Customer
         {
             Name = command.Name,
-            Email = command.Email,
-            RegisteredAt = DateTime.UtcNow
+            Email = command.Email
         };
     }
 }

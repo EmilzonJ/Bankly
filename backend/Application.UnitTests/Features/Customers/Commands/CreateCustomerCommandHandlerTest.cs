@@ -22,6 +22,8 @@ public class CreateCustomerCommandHandlerTest
         var result = await handler.Handle(command, default);
 
         // Assert
+        await _customerRepositoryMock.Received(0).AddAsync(Arg.Any<Customer>());
+
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(CustomerErrors.EmailTaken(email));
     }

@@ -29,9 +29,21 @@ public class MongoDbContext
             cm.GetMemberMap(c => c.Type)
                 .SetSerializer(new EnumSerializer<TransactionType>(BsonType.String));
         });
+
+        BsonClassMap.RegisterClassMap<Account>(acc =>
+        {
+            acc.AutoMap();
+            acc.GetMemberMap(c => c.Type)
+                .SetSerializer(new EnumSerializer<AccountType>(BsonType.String));
+        });
     }
 
     public IMongoCollection<Customer> Customers => _database.GetCollection<Customer>(Customer.CollectionName);
     public IMongoCollection<Account> Accounts => _database.GetCollection<Account>(Account.CollectionName);
-    public IMongoCollection<Transaction> Transactions => _database.GetCollection<Transaction>(Transaction.CollectionName);
+
+    public IMongoCollection<AccountSequence> AccountSequences =>
+        _database.GetCollection<AccountSequence>(AccountSequence.CollectionName);
+
+    public IMongoCollection<Transaction> Transactions =>
+        _database.GetCollection<Transaction>(Transaction.CollectionName);
 }

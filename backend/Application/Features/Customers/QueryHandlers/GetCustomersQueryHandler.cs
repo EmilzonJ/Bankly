@@ -6,15 +6,15 @@ using Application.Shared;
 namespace Application.Features.Customers.QueryHandlers;
 
 public record GetCustomersQueryHandler(
-    ICustomerRepository Repository
+    ICustomerRepository CustomerRepository
 ) : IQueryHandler<GetCustomersQuery, Result<PaginatedList<CustomerResponse>>>
 {
     public async ValueTask<Result<PaginatedList<CustomerResponse>>> Handle(GetCustomersQuery query, CancellationToken cancellationToken)
     {
-        var totalCustomers = await Repository.CountAsync(query.Name, query.Email, query.RegisteredAt);
-        var customers = await Repository.GetPagedAsync(query.PageNumber, query.PageSize, query.Name, query.Email, query.RegisteredAt);
+        var totalCustomers = await CustomerRepository.CountAsync(query.Name, query.Email, query.RegisteredAt);
+        var customers = await CustomerRepository.GetPagedAsync(query.PageNumber, query.PageSize, query.Name, query.Email, query.RegisteredAt);
 
-        var customerResponses = customers.Select(customer => customer.ToResponse()).ToList();
+        var customerResponses = customers.ToResponse();
         var paginatedList = new PaginatedList<CustomerResponse>(
             customerResponses,
             totalCustomers,
