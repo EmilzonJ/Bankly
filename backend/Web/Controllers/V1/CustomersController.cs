@@ -17,6 +17,7 @@ public class CustomersController(ISender sender) : BaseController
     public async Task<IResult> GetAsync()
     {
         var result = await sender.Send(new GetCustomersQuery());
+
         return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
     }
 
@@ -29,7 +30,6 @@ public class CustomersController(ISender sender) : BaseController
     public async Task<IResult> GetAsync(string id)
     {
         var idParsed = id.ToObjectId();
-
         if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
 
         var result = await sender.Send(new GetCustomerByIdQuery(idParsed.Value));
@@ -62,6 +62,24 @@ public class CustomersController(ISender sender) : BaseController
         if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
 
         var command = new UpdateCustomerCommand(idParsed.Value, request.Name, request.Email);
+
+        var result = await sender.Send(command);
+
+        return result.IsSuccess ? Results.Ok() : result.ToProblemDetails();
+    }
+
+    [HttpDelete("{id}")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> DeleteAsync(string id)
+    {
+        var idParsed = id.ToObjectId();
+        if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
+
+        var command = new DeleteCustomerCommand(idParsed.Value);
 
         var result = await sender.Send(command);
 
