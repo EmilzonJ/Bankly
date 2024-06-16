@@ -1,9 +1,6 @@
 using Application.Features.Customers.Extensions;
 using Application.Features.Customers.Models.Responses;
 using Application.Features.Customers.Queries;
-using Domain.Contracts;
-using Mediator;
-using Shared;
 
 namespace Application.Features.Customers.QueryHandlers;
 

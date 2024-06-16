@@ -10,12 +10,12 @@ public class CustomerRepository(MongoDbContext context) : ICustomerRepository
 {
     private readonly IMongoCollection<Customer> _customers = context.Customers;
 
-    public async Task<Customer> GetByIdAsync(ObjectId id)
+    public async Task<Customer?> GetByIdAsync(ObjectId id)
     {
         return await _customers.Find(c => c.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<Customer> GetByEmailAsync(string email)
+    public async Task<Customer?> GetByEmailAsync(string email)
     {
         return await _customers.Find(c => c.Email == email).FirstOrDefaultAsync();
     }

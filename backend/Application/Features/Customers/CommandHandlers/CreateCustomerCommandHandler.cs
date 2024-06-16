@@ -1,9 +1,5 @@
 using Application.Features.Customers.Commands;
 using Application.Features.Customers.Extensions;
-using Domain.Contracts;
-using Domain.Errors;
-using Mediator;
-using Shared;
 
 namespace Application.Features.Customers.CommandHandlers;
 

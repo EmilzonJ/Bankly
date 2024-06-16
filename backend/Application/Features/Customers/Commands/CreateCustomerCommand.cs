@@ -1,6 +1,3 @@
-using Mediator;
-using Shared;
-
 namespace Application.Features.Customers.Commands;
 
 public record CreateCustomerCommand(
