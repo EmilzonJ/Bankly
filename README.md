@@ -56,7 +56,7 @@ La arquitectura de la solución sigue los principios de Clean Architecture y est
 ### Diagrama de Arquitectura
 
 **Diagrama de Arquitectura General**
-![image](https://github.com/EmilzonJ/Bankly/assets/84218667/7260f0e3-649a-411a-ab8b-c4f2ae684ca2)[400px]
+![clean-arquitecture|400](https://github.com/EmilzonJ/Bankly/assets/84218667/7260f0e3-649a-411a-ab8b-c4f2ae684ca2)[400px]
 
 
 ## Repositorio de Datos
