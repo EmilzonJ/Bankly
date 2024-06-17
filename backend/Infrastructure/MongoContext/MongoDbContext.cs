@@ -13,7 +13,7 @@ namespace Infrastructure.MongoContext;
 public class MongoDbContext
 {
     private readonly IMongoDatabase _database;
-    private const string BasePathSeeder = "../src/Infrastructure/Seeders";
+    private const string BasePathSeeder = "Seeders";
 
     public MongoDbContext(IOptions<MongoDbSettings> settings)
     {

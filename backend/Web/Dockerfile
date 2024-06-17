@@ -23,4 +23,5 @@ RUN dotnet publish "Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAp
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=build /src/Infrastructure/Seeders /app/Seeders
 ENTRYPOINT ["dotnet", "Web.dll"]
