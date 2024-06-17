@@ -1,4 +1,4 @@
-# Bankly
+![image](https://github.com/EmilzonJ/Bankly/assets/84218667/28d12fcc-f1ba-4b51-90c6-aacf10b71215)# Bankly
 
 ## Descripción del Proyecto
 
@@ -57,3 +57,50 @@ Para las pruebas unitarias de la capa de `Application` (`UseCases`), se utiliza 
                       +-------------------+
                       |    MongoDB        |
                       +-------------------+
+```
+
+## Repositorio de Datos
+
+### Elección de la Tecnología de Almacenamiento de Datos
+
+Para este proyecto, se eligió MongoDB como base de datos debido a su flexibilidad y capacidad para manejar grandes volúmenes de datos no estructurados. Dados lo requerimientos, esta base de datos se adapta muy bien para guardar documentos en collecciones que pueden cambiar con el tiempo en su definición, pero sobre todo, para este tipo se software es vital el mantener un historial de transacciones limpias sin echar de menos la integridad de las bases de datos SQL pero con la potencia de las NoSQL.
+
+### Modelo de Datos y Relación entre Entidades
+
+**Modelo de Datos**
+
+Todas las entidades heredan de una clase base que contiene las siguientes propiedades:
+
+  - `CreatedAt`: Fecha de creación.
+  - `UpdatedAt`: Fecha de actualización.
+  - `IsActive`: Para manejar SoftDelete.
+
+- **Customer**: Representa a un cliente del banco.
+  - `Id`: Identificador único.
+  - `Name`: Nombre del cliente.
+  - `Email`: Correo electrónico del cliente.
+
+- **Account**: Representa una cuenta de ahorro.
+  - `Id`: Identificador único.
+  - `CustomerId`: Identificador del cliente propietario de la cuenta.
+  - `Number`: Número de cuenta.
+  - `Type`: Tipo de cuenta.
+
+- **Transaction**: Representa una transacción bancaria.
+  - `Id`: Identificador único.
+  - `Type`: Tipo de transacción (Depósito, Retiro, Transferencia).
+  - `Amount`: Monto de la transacción.
+  - `Description`: Descripción de la transacción.
+  - `SourceAccountId`: Identificador de la cuenta fuente.
+  - `DestinationAccountId`: Identificador de la cuenta destino (opcional).
+
+### Ejemplos de Consultas
+
+**Consulta para Obtener Clientes paginados y filtrados**
+
+```csharp
+public async Task<Customer?> GetByIdAsync(ObjectId id)
+{
+    return await _customers.Find(c => c.Id == id).FirstOrDefaultAsync();
+}
+
