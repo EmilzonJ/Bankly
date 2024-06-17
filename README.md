@@ -51,6 +51,9 @@ La arquitectura de la solución sigue los principios de Clean Architecture y est
 - **FluentValidation**: Librería utilizada para la validación de comandos y consultas.
 - **CSvHelper**: Para obtener datos de un csv y crear seeder de datos.
 - **Serilog**: Para tener logs estructurados. (Potencialmente combinado con OpenTelemtry para Observabilidad, Trazabilidad y Métricas)
+- **XUnit**: Para TDD.
+- **FluentAssertions**: Para facilitar los Asserts en los tests.
+- **NSubstitute*: Mi libreria favorita para mock, mejor que Moq. 😉 
 
 
 ## Repositorio de Datos
