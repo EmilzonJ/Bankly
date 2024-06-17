@@ -1,4 +1,4 @@
-![image](https://github.com/EmilzonJ/Bankly/assets/84218667/28d12fcc-f1ba-4b51-90c6-aacf10b71215)# Bankly
+# Bankly
 
 ## Descripción del Proyecto
 
