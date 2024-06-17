@@ -29,10 +29,6 @@ const CustomerListPage = () => {
       <ProTable
         loading={isLoading || isFetching}
         onReset={() => {
-          setPagination({
-            current: 1,
-            pageSize: 10,
-          });
           setFilters({});
         }}
         options={{
@@ -64,7 +60,7 @@ const CustomerListPage = () => {
         cardBordered
         rowKey="id"
         search={{
-          labelWidth: "auto",
+          labelWidth: "auto"
         }}
         onSubmit={(values) => {
           setFilters({
