@@ -1,17 +1,22 @@
-import { MenuDataItem, ProLayout } from "@ant-design/pro-components";
-import { PropsWithChildren } from "react";
-import { BankOutlined, UserOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
+import { PropsWithChildren } from 'react';
+import { BankOutlined, UserOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const defaultMenus: MenuDataItem[] = [
   {
-    path: "customers",
-    name: "Clientes",
+    path: 'customers',
+    name: 'Clientes',
     icon: <UserOutlined />,
     children: [
       {
-        path: "list",
-        name: "Listado de clientes",
+        path: 'list',
+        name: 'Listado de clientes',
+      },
+      {
+        path: 'detalle',
+        name: 'Detalle',
+        hideInMenu: true,
       },
     ],
   },
@@ -28,13 +33,13 @@ function AppLayout({ children }: PropsWithChildren) {
         },
       }}
       style={{
-        height: "100vh",
+        height: '100vh',
       }}
-      onMenuHeaderClick={() => navigate("/")}
-      title="Bankly"
+      onMenuHeaderClick={() => navigate('/')}
+      title='Bankly'
       logo={<BankOutlined />}
       route={{
-        path: "/",
+        path: '/',
         children: defaultMenus,
       }}
     >

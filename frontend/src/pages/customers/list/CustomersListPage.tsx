@@ -1,6 +1,7 @@
-import { useGetCustomersQuery } from "@/core/features/customers/api/customers-api.slice";
-import { PageContainer, ProTable } from "@ant-design/pro-components";
-import { useState } from "react";
+import { useGetCustomersQuery } from '@/core/features/customers/api/customers-api.slice';
+import { EditableProTable, PageContainer } from '@ant-design/pro-components';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface FilterState {
   name?: string;
@@ -18,16 +19,18 @@ const CustomerListPage = () => {
   });
   const [filters, setFilters] = useState<FilterState>({});
 
-  const { data, isFetching, isLoading, refetch } = useGetCustomersQuery({
+  const { data, isLoading, refetch } = useGetCustomersQuery({
     pageNumber: pagination.current,
     pageSize: pagination.pageSize,
     ...filters,
   });
 
+  const navigate = useNavigate();
+
   return (
     <PageContainer>
-      <ProTable
-        loading={isLoading || isFetching}
+      <EditableProTable
+        loading={isLoading}
         onReset={() => {
           setFilters({});
         }}
@@ -50,43 +53,41 @@ const CustomerListPage = () => {
             });
           },
         }}
-        onChange={console.log}
-        onLoad={console.log}
-        onLoadingChange={console.log}
-        columnsState={{
-          persistenceKey: "customer-list",
-          persistenceType: "localStorage",
-        }}
         cardBordered
-        rowKey="id"
+        rowKey='id'
         search={{
-          labelWidth: "auto"
+          labelWidth: 'auto',
         }}
         onSubmit={(values) => {
           setFilters({
-            name: values.name ?? "",
-            email: values.email ?? "",
-            registeredAt: values.registeredAt ?? "",
+            name: values.name ?? '',
+            email: values.email ?? '',
+            registeredAt: values.registeredAt ?? '',
           });
         }}
-        dataSource={data?.items || []}
+        onRow={(customer) => ({
+          onClick: () => {
+            navigate(`/customers/detail/${customer.id}`);
+          },
+        })}
+        value={data?.items || []}
         columns={[
           {
-            title: "Correo",
-            dataIndex: "email",
+            title: 'Correo',
+            dataIndex: 'email',
             filters: true,
-            valueType: "text",
+            valueType: 'text',
           },
           {
-            title: "Nombre",
-            dataIndex: "name",
+            title: 'Nombre',
+            dataIndex: 'name',
             filters: true,
-            valueType: "text",
+            valueType: 'text',
           },
           {
-            title: "Fecha de registro",
-            dataIndex: "registeredAt",
-            valueType: "date",
+            title: 'Fecha de registro',
+            dataIndex: 'registeredAt',
+            valueType: 'date',
             filters: true,
           },
         ]}

@@ -1,11 +1,17 @@
-import CustomerListPage from "./pages/customers/list/CustomersListPage";
-import AppLayout from "./theme/layouts/AppLayout";
+import CustomerDetailPage from './pages/customers/DetailPage';
+import CustomerListPage from './pages/customers/list/CustomersListPage';
+import AppLayout from './theme/layouts/AppLayout';
 
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  Outlet,
+  RouterProvider,
+} from 'react-router-dom';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: (
       <AppLayout>
         <Outlet />
@@ -13,17 +19,21 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/customers",
+        path: '/customers',
         children: [
           {
-            path: "list",
+            path: 'list',
             element: <CustomerListPage />,
           },
           {
-            path: "",
-            element: <Navigate to='list' />
-          }
-        ]
+            path: 'detail/:customerId',
+            element: <CustomerDetailPage />,
+          },
+          {
+            path: '',
+            element: <Navigate to='list' />,
+          },
+        ],
       },
     ],
   },
