@@ -1,22 +1,31 @@
-import { useGetCustomersQuery } from '@/core/features/customers/api/customers-api.slice';
-import { EditableProTable, PageContainer } from '@ant-design/pro-components';
+import {
+  CreateCustomer,
+  Customer,
+  UpdateCustomer,
+} from '@/core/data/customer.type';
+import {
+  useCreateCustomerMutation,
+  useDeleteCustomerMutation,
+  useGetCustomersQuery,
+  useUpdateCustomerMutation,
+} from '@/core/features/customers/api/customers-api.slice';
+import ListPresentation, {
+  FilterState,
+  LocalPagination,
+} from '@/core/features/customers/components/ListPresentation';
+import { PageContainer, ProCoreActionType } from '@ant-design/pro-components';
+import { App } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface FilterState {
-  name?: string;
-  email?: string;
-  registeredAt?: string;
-}
-
 const CustomerListPage = () => {
-  const [pagination, setPagination] = useState<{
-    current: number;
-    pageSize: number;
-  }>({
+  const [pagination, setPagination] = useState<LocalPagination>({
     current: 1,
     pageSize: 10,
   });
+
+  const { notification } = App.useApp();
+
   const [filters, setFilters] = useState<FilterState>({});
 
   const { data, isLoading, refetch } = useGetCustomersQuery({
@@ -27,70 +36,57 @@ const CustomerListPage = () => {
 
   const navigate = useNavigate();
 
+  const [createMutation] = useCreateCustomerMutation();
+  const [updateMutation] = useUpdateCustomerMutation();
+  const [deleteMutation] = useDeleteCustomerMutation();
+
+  const handleCreate = async (data: CreateCustomer) => {
+    await createMutation(data).unwrap();
+    notification.success({ message: 'Cliente creado correctamente' });
+  };
+
+  const handleUpdate = async (data: UpdateCustomer) => {
+    await updateMutation(data).unwrap();
+    notification.success({ message: 'Cliente actualizado correctamente' });
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteMutation(id).unwrap();
+    notification.success({ message: 'Cliente eliminado correctamente' });
+  };
+
+  const onSelect = (
+    key: string,
+    customer: Customer,
+    action: ProCoreActionType<object>
+  ) => {
+    const actions: Record<string, () => void> = {
+      '1': () => {
+        handleDelete(customer.id);
+      },
+      '2': () => {
+        action.startEditable?.(customer.id);
+      },
+      '3': () => {
+        navigate(`/customers/detail/${customer.id}`);
+      },
+    };
+
+    actions[key]?.();
+  };
+
   return (
     <PageContainer>
-      <EditableProTable
-        loading={isLoading}
-        onReset={() => {
-          setFilters({});
-        }}
-        options={{
-          reload: () => {
-            refetch();
-          },
-          fullScreen: true,
-          setting: true,
-          density: true,
-        }}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: data?.totalCount || 0,
-          onChange: (page, pageSize) => {
-            setPagination({
-              current: page,
-              pageSize: pageSize,
-            });
-          },
-        }}
-        cardBordered
-        rowKey='id'
-        search={{
-          labelWidth: 'auto',
-        }}
-        onSubmit={(values) => {
-          setFilters({
-            name: values.name ?? '',
-            email: values.email ?? '',
-            registeredAt: values.registeredAt ?? '',
-          });
-        }}
-        onRow={(customer) => ({
-          onClick: () => {
-            navigate(`/customers/detail/${customer.id}`);
-          },
-        })}
-        value={data?.items || []}
-        columns={[
-          {
-            title: 'Correo',
-            dataIndex: 'email',
-            filters: true,
-            valueType: 'text',
-          },
-          {
-            title: 'Nombre',
-            dataIndex: 'name',
-            filters: true,
-            valueType: 'text',
-          },
-          {
-            title: 'Fecha de registro',
-            dataIndex: 'registeredAt',
-            valueType: 'date',
-            filters: true,
-          },
-        ]}
+      <ListPresentation
+        handleCreate={handleCreate}
+        handleUpdate={handleUpdate}
+        isLoading={isLoading}
+        onSelectOptions={onSelect}
+        pagination={pagination}
+        refetch={refetch}
+        setFilters={setFilters}
+        setPagination={setPagination}
+        data={data}
       />
     </PageContainer>
   );
