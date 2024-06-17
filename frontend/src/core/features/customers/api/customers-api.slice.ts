@@ -1,5 +1,10 @@
 import { Account, CreateAccount } from '@/core/data/accounts.type';
-import { Customer, CustomerParams } from '@/core/data/customer.type';
+import {
+  CreateCustomer,
+  Customer,
+  CustomerParams,
+  UpdateCustomer,
+} from '@/core/data/customer.type';
 import { Paginated, PaginatedParams } from '@/core/data/paginated.type';
 import { baseApi } from '@/core/store/base.api';
 
@@ -39,7 +44,7 @@ export const customersApi = baseApiChild.injectEndpoints({
       query: (id) => `customers/${id}`,
       providesTags: [{ type: 'Customer' }],
     }),
-    createCustomer: builder.mutation<Customer, Partial<Customer>>({
+    createCustomer: builder.mutation<Customer, CreateCustomer>({
       query: (body) => ({
         url: 'customers',
         method: 'POST',
@@ -47,20 +52,20 @@ export const customersApi = baseApiChild.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Customer', id: 'LIST' }],
     }),
-    updateCustomer: builder.mutation<Customer, Partial<Customer>>({
+    updateCustomer: builder.mutation<Customer, UpdateCustomer>({
       query: ({ id, ...body }) => ({
         url: `customers/${id}`,
         method: 'PUT',
         body,
       }),
-      invalidatesTags: [{ type: 'Customer', id: 'DETAIL' }],
+      invalidatesTags: [{ type: 'Customer' }],
     }),
     deleteCustomer: builder.mutation<void, string>({
       query: (id) => ({
         url: `customers/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: [{ type: 'Customer', id: 'DETAIL' }],
+      invalidatesTags: [{ type: 'Customer' }],
     }),
   }),
 });
@@ -71,4 +76,6 @@ export const {
   useCreateCustomerMutation,
   useGetCustomerAccountsQuery,
   useCreateAccountMutation,
+  useDeleteCustomerMutation,
+  useUpdateCustomerMutation,
 } = customersApi;

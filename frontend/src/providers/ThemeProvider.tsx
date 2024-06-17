@@ -1,10 +1,10 @@
-import { ConfigProvider } from "antd";
-import { PropsWithChildren } from "react";
-import esEs from "antd/locale/es_ES";
+import { App, ConfigProvider } from 'antd';
+import { PropsWithChildren } from 'react';
+import esEs from 'antd/locale/es_ES';
 
 const data = {
   borderRadius: 6,
-  colorPrimary: "#9E339F",
+  colorPrimary: '#9E339F',
 };
 
 function ThemeProvider({ children }: PropsWithChildren) {
@@ -18,7 +18,7 @@ function ThemeProvider({ children }: PropsWithChildren) {
       }}
       locale={esEs}
     >
-      {children}
+      <App>{children}</App>
     </ConfigProvider>
   );
 }

@@ -1,6 +1,6 @@
+import { BankOutlined, UserOutlined } from '@ant-design/icons';
 import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
 import { PropsWithChildren } from 'react';
-import { BankOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const defaultMenus: MenuDataItem[] = [

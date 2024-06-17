@@ -1,7 +1,6 @@
 import CustomerDetailPage from './pages/customers/DetailPage';
 import CustomerListPage from './pages/customers/list/CustomersListPage';
 import AppLayout from './theme/layouts/AppLayout';
-
 import {
   createBrowserRouter,
   Navigate,
