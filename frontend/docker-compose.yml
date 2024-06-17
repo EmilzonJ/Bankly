@@ -1,8 +1,6 @@
 services:
   bankly-fe:
-    build: 
-      context: .
-      dockerfile: Dockerfile
+    image: emilzonj/bankly-fe:latest
     container_name: bankly-fe
     ports:
       - "3000:3000"
