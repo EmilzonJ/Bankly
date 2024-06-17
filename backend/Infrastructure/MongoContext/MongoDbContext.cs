@@ -63,6 +63,7 @@ public class MongoDbContext
             .Select(c => new Account
             {
                 Id = ObjectId.GenerateNewId(),
+                Alias = "Cuenta principal",
                 CustomerId = c.Id,
                 Balance = 500,
                 Type = AccountType.Savings

@@ -20,6 +20,11 @@ public class TransactionRepository(MongoDbContext context) : ITransactionReposit
         return await _transactions.Find(_ => true).ToListAsync();
     }
 
+    public async Task<IEnumerable<Transaction>> GetAllByAccountAsync(ObjectId accountId)
+        => await _transactions
+            .Find(t => t.SourceAccountId == accountId || t.DestinationAccountId == accountId)
+            .ToListAsync();
+
     public async Task AddAsync(Transaction transaction)
     {
         await _transactions.InsertOneAsync(transaction);

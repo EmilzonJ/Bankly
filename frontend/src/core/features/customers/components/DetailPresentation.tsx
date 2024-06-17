@@ -34,27 +34,28 @@ function DetailPresentation({
             dataIndex: 'email',
           },
           {
-            title: 'Fecha de creación',
+            title: 'Fecha de Registro',
             dataIndex: 'registeredAt',
             valueType: 'date',
           },
         ]}
       />
       <EditableProTable<Partial<Account>>
+        headerTitle='Cuentas del cliente'
         rowKey='id'
         recordCreatorProps={{
           position: 'top',
           record: () => ({
-            id: 'create',
+            id: 'Nueva',
             balance: 0,
           }),
-          creatorButtonText: ' Crear nueva cuenta',
+          creatorButtonText: 'Crear nueva cuenta',
         }}
         editable={{
           form,
           type: 'multiple',
           onSave: async (rowKey, data) => {
-            if (rowKey === 'create') {
+            if (rowKey === 'Nueva') {
               await onCreateAccount({
                 balance: data.balance as number,
               });
@@ -62,7 +63,6 @@ function DetailPresentation({
               return true;
             }
           },
-
           actionRender: (_row, _config, defaultDoms) => [
             defaultDoms.save,
             defaultDoms.cancel,

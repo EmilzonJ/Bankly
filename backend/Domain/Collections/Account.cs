@@ -9,6 +9,7 @@ public class Account : CollectionBase
     public const string CollectionName = "Accounts";
 
     public ObjectId CustomerId { get; set; }
+    public string Alias { get; set; }
     public decimal Balance { get; set; }
     public AccountType Type { get; set; }
 

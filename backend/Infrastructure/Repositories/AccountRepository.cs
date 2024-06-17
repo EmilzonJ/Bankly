@@ -15,11 +15,15 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
     public async Task<Account?> GetByIdAsync(ObjectId id)
         => await _accounts.Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.Id, id))).FirstOrDefaultAsync();
 
+    public async Task<bool> ExistsAsync(ObjectId id)
+        => await _accounts.Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.Id, id))).AnyAsync();
+
     public async Task<IEnumerable<Account>> GetAllAsync()
         => await _accounts.Find(CreateActiveFilter()).ToListAsync();
 
     public async Task<IEnumerable<Account>> GetAllByCustomerAsync(ObjectId customerId)
-        => await _accounts.Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.CustomerId, customerId))).ToListAsync();
+        => await _accounts.Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.CustomerId, customerId)))
+            .ToListAsync();
 
     public async Task AddAsync(Account account)
     {
@@ -58,4 +62,3 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
         return filter;
     }
 }
-

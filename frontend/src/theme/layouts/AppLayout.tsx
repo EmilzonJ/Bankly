@@ -12,12 +12,7 @@ const defaultMenus: MenuDataItem[] = [
       {
         path: 'list',
         name: 'Listado de clientes',
-      },
-      {
-        path: 'detalle',
-        name: 'Detalle',
-        hideInMenu: true,
-      },
+      }
     ],
   },
 ];

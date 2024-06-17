@@ -25,6 +25,22 @@ public class AccountsController(ISender sender) : BaseController
         return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
     }
 
+    [HttpGet("{id}/transactions")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IResult> GetTransactionsAsync(string id)
+    {
+        var idParsed = id.ToObjectId();
+        if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
+
+        var result = await sender.Send(new GetAccountTransactionsQuery(idParsed.Value));
+
+        return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
+    }
+
     [HttpDelete("{id}")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

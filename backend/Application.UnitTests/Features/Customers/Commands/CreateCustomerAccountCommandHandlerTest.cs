@@ -24,7 +24,7 @@ public class CreateCustomerAccountCommandHandlerTest
 
         // Assert
         await _accountRepository
-            .Received(0)
+            .DidNotReceive()
             .AddAsync(Arg.Any<Account>());
 
         result.IsSuccess.Should().BeFalse();
@@ -47,7 +47,7 @@ public class CreateCustomerAccountCommandHandlerTest
 
         // Assert
         await _accountRepository
-            .Received(0)
+            .DidNotReceive()
             .AddAsync(Arg.Any<Account>());
 
         result.IsSuccess.Should().BeFalse();

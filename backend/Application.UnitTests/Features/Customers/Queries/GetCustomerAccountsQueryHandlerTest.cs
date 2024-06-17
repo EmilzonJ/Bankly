@@ -27,7 +27,7 @@ public class GetCustomerAccountsQueryHandlerTest
 
         // Assert
         await _accountRepository
-            .Received(0)
+            .DidNotReceive()
             .GetAllByCustomerAsync(Arg.Any<ObjectId>());
 
         result.IsFailure.Should().BeTrue();

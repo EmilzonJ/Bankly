@@ -25,7 +25,7 @@ public class DeleteAccountCommandHandlerTest
 
         // Assert
         await _accountRepository
-            .Received(0)
+            .DidNotReceive()
             .DeleteAsync(Arg.Any<Account>());
 
         result.IsFailure.Should().BeTrue();
