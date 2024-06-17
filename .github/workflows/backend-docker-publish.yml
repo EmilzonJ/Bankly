@@ -23,6 +23,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./backend
-          file: ./backend/Web/Dockerfile
+          file: ./Web/Dockerfile
           push: true
           tags: emilzonj/bankly-be:latest
