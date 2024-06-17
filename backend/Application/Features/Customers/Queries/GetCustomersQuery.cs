@@ -8,6 +8,6 @@ public record GetCustomersQuery(
     int PageSize,
     string? Name = null,
     string? Email = null,
-    DateTime? RegisteredAt = null
+    DateOnly? RegisteredAt = null
 ) : IQuery<Result<PaginatedList<CustomerResponse>>>;
 

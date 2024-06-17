@@ -6,5 +6,5 @@ public class GetCustomersFilter
     public int PageSize { get; set; } = Constants.Pagination.DefaultPageSize;
     public string? Name { get; set; }
     public string? Email { get; set; }
-    public DateTime? RegisteredAt { get; set; }
+    public DateOnly? RegisteredAt { get; set; }
 }

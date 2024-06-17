@@ -6,7 +6,6 @@ public record CustomerAccountResponse
 {
     public required string Id { get; init; }
     public required string CustomerId { get; init; }
-    public double Number { get; init; }
     public decimal Balance { get; init; }
     public AccountType Type { get; init; }
     public DateTime CreatedAt { get; init; }

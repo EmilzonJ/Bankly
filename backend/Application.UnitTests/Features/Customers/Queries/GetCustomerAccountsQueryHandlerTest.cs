@@ -64,7 +64,6 @@ public class GetCustomerAccountsQueryHandlerTest
             {
                 Id = ObjectId.GenerateNewId(),
                 CustomerId = query.CustomerId,
-                Number = 202306151345300001,
                 Balance = 1000,
                 Type = AccountType.Savings,
                 CreatedAt = DateTime.UtcNow,

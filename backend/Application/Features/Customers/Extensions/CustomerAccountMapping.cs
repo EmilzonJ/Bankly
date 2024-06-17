@@ -12,7 +12,6 @@ public static class CustomerAccountMapping
         {
             Id = account.Id.ToString(),
             CustomerId = account.CustomerId.ToString(),
-            Number = account.Number,
             Balance = account.Balance,
             Type = account.Type,
             CreatedAt = account.CreatedAt,

@@ -10,7 +10,7 @@ public class Transaction : CollectionBase
 
     public TransactionType Type { get; set; }
     public decimal Amount { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public ObjectId SourceAccountId { get; set; }
     public ObjectId? DestinationAccountId { get; set; }

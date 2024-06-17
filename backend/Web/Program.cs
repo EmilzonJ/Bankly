@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Infrastructure.MongoContext;
 using Web;
 using Web.Settings;
 
@@ -27,4 +28,24 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+await SeedDataAsync(app);
+
 app.Run();
+
+return;
+
+async Task SeedDataAsync(WebApplication application)
+{
+    using var scope = application.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var mongoDbContext = services.GetRequiredService<MongoDbContext>();
+        await mongoDbContext.SeedCollectionsAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}

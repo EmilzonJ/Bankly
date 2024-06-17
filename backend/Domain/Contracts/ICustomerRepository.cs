@@ -16,7 +16,7 @@ public interface ICustomerRepository
     Task<int> CountAsync(
         string? name,
         string? email,
-        DateTime? registeredAt
+        DateOnly? registeredAt
     );
 
     Task<IEnumerable<Customer>> GetPagedAsync(
@@ -24,6 +24,6 @@ public interface ICustomerRepository
         int pageSize,
         string? name,
         string? email,
-        DateTime? registeredAt
+        DateOnly? registeredAt
     );
 }

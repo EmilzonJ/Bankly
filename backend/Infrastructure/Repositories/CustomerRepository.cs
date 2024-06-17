@@ -115,7 +115,7 @@ public class CustomerRepository : ICustomerRepository
     public async Task<int> CountAsync(
         string? name,
         string? email,
-        DateTime? registeredAt
+        DateOnly? registeredAt
     )
     {
         var filter = CreateFilter(name, email, registeredAt);
@@ -127,7 +127,7 @@ public class CustomerRepository : ICustomerRepository
         int pageSize,
         string? name,
         string? email,
-        DateTime? registeredAt
+        DateOnly? registeredAt
     )
     {
         var filter = CreateFilter(name, email, registeredAt);
@@ -137,7 +137,7 @@ public class CustomerRepository : ICustomerRepository
             .ToListAsync();
     }
 
-    private static FilterDefinition<Customer> CreateFilter(string? name, string? email, DateTime? registeredAt)
+    private static FilterDefinition<Customer> CreateFilter(string? name, string? email, DateOnly? registeredAt)
     {
         var builder = Builders<Customer>.Filter;
         var filter = builder.Empty;
@@ -152,9 +152,7 @@ public class CustomerRepository : ICustomerRepository
 
         if (!registeredAt.HasValue) return filter;
 
-        var start = registeredAt.Value.Date;
-        var end = start.AddDays(1).AddTicks(-1);
-        filter &= builder.Gte(c => c.CreatedAt, start) & builder.Lte(c => c.CreatedAt, end);
+        filter &= builder.Eq(c => DateOnly.FromDateTime(c.CreatedAt), registeredAt.Value);
 
         return filter;
     }
