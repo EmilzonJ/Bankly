@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  docker-be-publish:
     runs-on: ubuntu-latest
     steps:
       -
@@ -22,7 +22,6 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
-          file: ./Web/Dockerfile
+          context: ./backend/Web
           push: true
           tags: emilzonj/bankly-be:latest
