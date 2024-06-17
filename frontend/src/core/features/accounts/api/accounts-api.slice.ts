@@ -5,7 +5,5 @@ const baseApiChild = baseApi.enhanceEndpoints({
 });
 
 export const accountsApi = baseApiChild.injectEndpoints({
-  endpoints: (builder) => ({}),
+  endpoints: () => ({}),
 });
-
-export const {} = accountsApi;

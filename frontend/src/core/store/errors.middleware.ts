@@ -13,10 +13,13 @@ export const ErrorLoggerMiddleware: Middleware = () => (next) => (action) => {
   }
   //@ts-ignore
   if (action.payload?.status >= 400) {
+    //@ts-ignore
     console.log(action.payload.data.errors);
     console.log(message);
 
+    //@ts-ignore
     (action.payload.data.errors as string[])?.forEach((e) => {
+      //@ts-ignore
       message.error(e.description);
     });
   }
