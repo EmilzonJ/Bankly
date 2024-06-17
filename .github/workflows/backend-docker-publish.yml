@@ -22,5 +22,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: ./backend
+          file: ./backend/Web/Dockerfile
           push: true
-          tags: bankly-be:latest
+          tags: emilzonj/bankly-be:latest
