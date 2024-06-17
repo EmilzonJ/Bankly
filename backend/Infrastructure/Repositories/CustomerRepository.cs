@@ -117,7 +117,7 @@ public class CustomerRepository : ICustomerRepository
     )
     {
         var filter = CreateFilter(name, email, registeredAt);
-        return (int)await _customers.CountDocumentsAsync(CreateActiveFilter(filter));
+        return (int) await _customers.CountDocumentsAsync(CreateActiveFilter(filter));
     }
 
     public async Task<IEnumerable<Customer>> GetPagedAsync(
@@ -150,10 +150,12 @@ public class CustomerRepository : ICustomerRepository
             filter &= builder.Regex(c => c.Email, new BsonRegularExpression($"/{email}/i"));
         }
 
-        if (registeredAt.HasValue)
-        {
-            filter &= builder.Eq(c => DateOnly.FromDateTime(c.CreatedAt), registeredAt.Value);
-        }
+        if (!registeredAt.HasValue) return filter;
+
+        var startOfDay = registeredAt.Value.ToDateTime(TimeOnly.MinValue);
+        var endOfDay = registeredAt.Value.ToDateTime(TimeOnly.MaxValue);
+
+        filter &= builder.Gte(c => c.CreatedAt, startOfDay) & builder.Lte(c => c.CreatedAt, endOfDay);
 
         return filter;
     }
