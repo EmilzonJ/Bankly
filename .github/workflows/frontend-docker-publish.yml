@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker-be-publish:
+  docker-fe-publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -21,6 +21,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
-          file: ./backend/Dockerfile
+          file: ./frontend/Dockerfile
           push: true
           tags: emilzonj/bankly-fe:latest
