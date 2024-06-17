@@ -3,7 +3,7 @@
 ## Características de la aplicación
 - **Clientes**: Lista, Detalle, Filtrar, Crear, Actualizar y Eliminar.
 - **Cuentas**: Listar, Detalle, Crear, Actualizar y Eliminar. (Varias cuentas por cliente, de tipo Ahorro por defecto)
-- **Transacciones**: Lista, Detalle, Filtrar, Creación y Eliminación. (Depósitos, Retiros y Tranferencias)
+- **Transacciones**: Lista, Detalle, Filtrar, Crear y Eliminar. (Depósitos, Retiros y Tranferencias)
 
 Esta aplicación está desarrollada utilizando .NET 8 para el back-end y React para el front-end, con MongoDB como base de datos.
 
