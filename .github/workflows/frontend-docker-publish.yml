@@ -25,3 +25,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: emilzonj/bankly-fe:latest
+          build-args: |
+            VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
