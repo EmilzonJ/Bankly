@@ -18,33 +18,31 @@ public class CustomerRepository : ICustomerRepository
         _accounts = context.Accounts;
         _transactions = context.Transactions;
 
-        var indexKeys = Builders<Customer>.IndexKeys.Text(c => c.Name).Text(c => c.Email);
-        _customers.Indexes.CreateOne(new CreateIndexModel<Customer>(indexKeys));
+        var nameIndexKeys = Builders<Customer>.IndexKeys.Ascending(c => c.Name);
+        var emailIndexKeys = Builders<Customer>.IndexKeys.Ascending(c => c.Email);
+
+        _customers.Indexes.CreateOne(new CreateIndexModel<Customer>(nameIndexKeys));
+        _customers.Indexes.CreateOne(new CreateIndexModel<Customer>(emailIndexKeys));
     }
 
     public async Task<Customer?> GetByIdAsync(ObjectId id)
-        => await _customers.Find(c => c.Id == id).FirstOrDefaultAsync();
+        => await _customers.Find(CreateActiveFilter(Builders<Customer>.Filter.Eq(c => c.Id, id))).FirstOrDefaultAsync();
 
     public async Task<bool> ExistsAsync(ObjectId id)
-        => await _customers.Find(c => c.Id == id).AnyAsync();
+        => await _customers.Find(CreateActiveFilter(Builders<Customer>.Filter.Eq(c => c.Id, id))).AnyAsync();
 
     public async Task<bool> EmailExistsAsync(string email)
-        => await _customers.Find(c => c.Email == email).AnyAsync();
+        => await _customers.Find(CreateActiveFilter(Builders<Customer>.Filter.Eq(c => c.Email, email))).AnyAsync();
 
     public async Task<IEnumerable<Customer>> GetAllAsync()
-        => await _customers.Find(FilterDefinition<Customer>.Empty).ToListAsync();
+        => await _customers.Find(CreateActiveFilter()).ToListAsync();
 
     public async Task AddAsync(Customer customer)
-    {
-        customer.CreatedAt = DateTime.UtcNow;
-
-        await _customers.InsertOneAsync(customer);
-    }
+        => await _customers.InsertOneAsync(customer);
 
     public async Task UpdateAsync(Customer customer)
     {
         customer.UpdatedAt = DateTime.UtcNow;
-
         await _customers.ReplaceOneAsync(c => c.Id == customer.Id, customer);
     }
 
@@ -119,7 +117,7 @@ public class CustomerRepository : ICustomerRepository
     )
     {
         var filter = CreateFilter(name, email, registeredAt);
-        return (int) await _customers.CountDocumentsAsync(filter);
+        return (int)await _customers.CountDocumentsAsync(CreateActiveFilter(filter));
     }
 
     public async Task<IEnumerable<Customer>> GetPagedAsync(
@@ -131,7 +129,7 @@ public class CustomerRepository : ICustomerRepository
     )
     {
         var filter = CreateFilter(name, email, registeredAt);
-        return await _customers.Find(filter)
+        return await _customers.Find(CreateActiveFilter(filter))
             .Skip((pageNumber - 1) * pageSize)
             .Limit(pageSize)
             .ToListAsync();
@@ -142,17 +140,33 @@ public class CustomerRepository : ICustomerRepository
         var builder = Builders<Customer>.Filter;
         var filter = builder.Empty;
 
-        if (!string.IsNullOrWhiteSpace(name) || !string.IsNullOrWhiteSpace(email))
+        if (!string.IsNullOrWhiteSpace(name))
         {
-            var searchTerms = new List<string>();
-            if (!string.IsNullOrWhiteSpace(name)) searchTerms.Add(name);
-            if (!string.IsNullOrWhiteSpace(email)) searchTerms.Add(email);
-            filter &= builder.Text(string.Join(" ", searchTerms));
+            filter &= builder.Regex(c => c.Name, new BsonRegularExpression($"/{name}/i"));
         }
 
-        if (!registeredAt.HasValue) return filter;
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            filter &= builder.Regex(c => c.Email, new BsonRegularExpression($"/{email}/i"));
+        }
 
-        filter &= builder.Eq(c => DateOnly.FromDateTime(c.CreatedAt), registeredAt.Value);
+        if (registeredAt.HasValue)
+        {
+            filter &= builder.Eq(c => DateOnly.FromDateTime(c.CreatedAt), registeredAt.Value);
+        }
+
+        return filter;
+    }
+
+    private static FilterDefinition<Customer> CreateActiveFilter(FilterDefinition<Customer>? additionalFilter = null)
+    {
+        var builder = Builders<Customer>.Filter;
+        var filter = builder.Eq(c => c.IsActive, true);
+
+        if (additionalFilter != null)
+        {
+            filter &= additionalFilter;
+        }
 
         return filter;
     }
