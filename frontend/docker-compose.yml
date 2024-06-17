@@ -6,8 +6,6 @@ services:
     container_name: bankly-fe
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
     networks:
       - bankly-network
 
