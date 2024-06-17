@@ -53,12 +53,6 @@ La arquitectura de la solución sigue los principios de Clean Architecture y est
 - **Serilog**: Para tener logs estructurados. (Potencialmente combinado con OpenTelemtry para Observabilidad, Trazabilidad y Métricas)
 
 
-### Diagrama de Arquitectura
-
-**Diagrama de Arquitectura General**
-![clean-arquitecture|200](https://github.com/EmilzonJ/Bankly/assets/84218667/7260f0e3-649a-411a-ab8b-c4f2ae684ca2)
-
-
 ## Repositorio de Datos
 
 ### Beneficios de MongoDB para los Requerimientos del Proyecto
