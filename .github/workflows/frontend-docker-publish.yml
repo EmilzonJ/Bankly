@@ -22,5 +22,6 @@ jobs:
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: emilzonj/bankly-fe:latest
