@@ -2,7 +2,7 @@ import { Account, CreateAccount } from '@/core/data/accounts.type';
 import { Customer } from '@/core/data/customer.type';
 import { EditableProTable, ProDescriptions } from '@ant-design/pro-components';
 import { useForm } from 'antd/es/form/Form';
-import { accountTpeMap } from '../../accounts/api/maps/accountTypes.map';
+import { accountTpeMap } from '../../accounts/utils/accountTypes.map';
 
 type DetailPresentationProps = {
   data?: Customer;

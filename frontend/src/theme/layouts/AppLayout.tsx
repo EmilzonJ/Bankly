@@ -5,15 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 const defaultMenus: MenuDataItem[] = [
   {
-    path: 'customers',
+    path: 'customers/list',
     name: 'Clientes',
     icon: <UserOutlined />,
-    children: [
-      {
-        path: 'list',
-        name: 'Listado de clientes',
-      }
-    ],
   },
 ];
 
