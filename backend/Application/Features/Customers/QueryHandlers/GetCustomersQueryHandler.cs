@@ -16,7 +16,8 @@ public record GetCustomersQueryHandler(
         IEnumerable<Customer> customers = await CustomerRepository
             .GetPagedAsync(
                 query.PageNumber,
-                query.PageSize, query.Name,
+                query.PageSize,
+                query.Name,
                 query.Email,
                 query.RegisteredAt
             );

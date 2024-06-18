@@ -23,6 +23,21 @@
       - "6379:6379"
     networks:
       - bankly-network
+  bankly-mq:
+    image: rabbitmq:management
+    container_name: bankly-mq
+    hostname: bankly-mq
+    restart: unless-stopped
+    ports:
+      - "15672:15672"
+    volumes:
+      - rabbitmq-volume_data:/var/lib/rabbitmq
+      - rabbitmq-volume_log:/var/log/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - bankly-network
   bankly-db:
     image: mongo:latest
     container_name: bankly-db
@@ -55,5 +70,7 @@ networks:
 
 volumes:
   redis-volume_data:
+  rabbitmq-volume_data:
+  rabbitmq-volume_log:
   bankly-db:
     driver: local

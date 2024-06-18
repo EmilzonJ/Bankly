@@ -39,8 +39,9 @@ public class GetAccountByIdQueryHandlerTest
         var account = new Account
         {
             Id = accountId,
+            Alias = "Alias",
             CustomerId = new ObjectId(),
-            Balance = 1000
+            CustomerName = "Jhon Doe"
         };
 
         _accountRepository.GetByIdAsync(query.Id).Returns(account);

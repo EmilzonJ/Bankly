@@ -11,10 +11,11 @@ public record CreateCustomerAccountCommandHandler(
     public async ValueTask<Result<string>> Handle(CreateCustomerAccountCommand command,
         CancellationToken cancellationToken)
     {
-        var account = command.ToEntity();
+        var customer = await CustomerRepository.GetByIdAsync(command.CustomerId);
+        if (customer is null)
+            return Result.Failure<string>(CustomerErrors.NotFound(command.CustomerId));
 
-        if (!await CustomerRepository.ExistsAsync(account.CustomerId))
-            return Result.Failure<string>(CustomerErrors.NotFound(account.CustomerId));
+        var account = command.ToEntity(customer.Name);
 
         if (account.Balance < 0)
             return Result.Failure<string>(AccountErrors.NegativeBalance(account.Balance));

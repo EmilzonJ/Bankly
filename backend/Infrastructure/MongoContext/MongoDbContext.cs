@@ -40,15 +40,55 @@ public class MongoDbContext
         });
     }
 
+    public void CreateIndexes()
+    {
+        CreateCustomerIndexes();
+        CreateAccountIndexes();
+        CreateTransactionIndexes();
+    }
+
+    private void CreateCustomerIndexes()
+    {
+        var nameIndexKeys = Builders<Customer>.IndexKeys.Ascending(c => c.Name);
+        var emailIndexKeys = Builders<Customer>.IndexKeys.Ascending(c => c.Email);
+        var createdAtIndexKeys = Builders<Customer>.IndexKeys.Ascending(c => c.CreatedAt);
+
+        Customers.Indexes.CreateOne(new CreateIndexModel<Customer>(nameIndexKeys));
+        Customers.Indexes.CreateOne(new CreateIndexModel<Customer>(emailIndexKeys));
+        Customers.Indexes.CreateOne(new CreateIndexModel<Customer>(createdAtIndexKeys));
+    }
+
+    private void CreateAccountIndexes()
+    {
+        var customerIdIndexKeys = Builders<Account>.IndexKeys.Ascending(a => a.CustomerId);
+        var aliasIndexKeys = Builders<Account>.IndexKeys.Ascending(a => a.Alias);
+        var createdAtIndexKeys = Builders<Account>.IndexKeys.Ascending(a => a.CreatedAt);
+
+        Accounts.Indexes.CreateOne(new CreateIndexModel<Account>(customerIdIndexKeys));
+        Accounts.Indexes.CreateOne(new CreateIndexModel<Account>(aliasIndexKeys));
+        Accounts.Indexes.CreateOne(new CreateIndexModel<Account>(createdAtIndexKeys));
+    }
+
+    private void CreateTransactionIndexes()
+    {
+        var typeIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.Type);
+        var sourceAccountIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.SourceAccountId);
+        var destinationAccountIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.DestinationAccountId);
+        var createdAtIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.CreatedAt);
+
+        Transactions.Indexes.CreateOne(new CreateIndexModel<Transaction>(typeIndexKeys));
+        Transactions.Indexes.CreateOne(new CreateIndexModel<Transaction>(sourceAccountIndexKeys));
+        Transactions.Indexes.CreateOne(new CreateIndexModel<Transaction>(destinationAccountIndexKeys));
+        Transactions.Indexes.CreateOne(new CreateIndexModel<Transaction>(createdAtIndexKeys));
+    }
+
     public IMongoCollection<Customer> Customers => _database.GetCollection<Customer>(Customer.CollectionName);
     public IMongoCollection<Account> Accounts => _database.GetCollection<Account>(Account.CollectionName);
-
-    public IMongoCollection<Transaction> Transactions =>
-        _database.GetCollection<Transaction>(Transaction.CollectionName);
+    public IMongoCollection<Transaction> Transactions => _database.GetCollection<Transaction>(Transaction.CollectionName);
 
     public async Task SeedCollectionsAsync()
     {
-        if(await Customers.Find(FilterDefinition<Customer>.Empty).AnyAsync()) return;
+        if (await Customers.Find(FilterDefinition<Customer>.Empty).AnyAsync()) return;
 
         var customerSeeder = new Seeder<Customer>(Customers);
         var customerRecords = customerSeeder.GetRecordsAsync($"{BasePathSeeder}/Customers.csv");
@@ -65,6 +105,7 @@ public class MongoDbContext
                 Id = ObjectId.GenerateNewId(),
                 Alias = "Cuenta principal",
                 CustomerId = c.Id,
+                CustomerName = c.Name,
                 Balance = 400,
                 Type = AccountType.Savings
             }).ToList();
@@ -72,7 +113,7 @@ public class MongoDbContext
         var accountSeeder = new Seeder<Account>(Accounts);
         await accountSeeder.SeedAsync(accounts);
 
-        if(accounts.Count == 0) return;
+        if (accounts.Count == 0) return;
 
         List<Transaction> transactions = [];
 

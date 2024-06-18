@@ -1,9 +1,9 @@
+using Application.Shared;
+
 namespace Application.Features.Customers.Models.Filters;
 
-public class GetCustomersFilter
+public record GetCustomersFilter : PaginationFilter
 {
-    public int PageNumber { get; set; } = Constants.Pagination.DefaultPageNumber;
-    public int PageSize { get; set; } = Constants.Pagination.DefaultPageSize;
     public string? Name { get; set; }
     public string? Email { get; set; }
     public DateOnly? RegisteredAt { get; set; }

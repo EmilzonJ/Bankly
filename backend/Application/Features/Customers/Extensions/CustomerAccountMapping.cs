@@ -25,11 +25,12 @@ public static class CustomerAccountMapping
         return accounts.Select(a => a.ToResponse()).ToList();
     }
 
-    public static Account ToEntity(this CreateCustomerAccountCommand command)
+    public static Account ToEntity(this CreateCustomerAccountCommand command, string customerName)
     {
         return new Account
         {
             CustomerId = command.CustomerId,
+            CustomerName = customerName,
             Balance = command.Balance,
             Alias = command.Alias
         };

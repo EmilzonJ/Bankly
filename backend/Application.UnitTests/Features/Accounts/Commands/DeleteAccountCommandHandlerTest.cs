@@ -39,7 +39,10 @@ public class DeleteAccountCommandHandlerTest
         var accountId = new ObjectId();
         var command = new DeleteAccountCommand(accountId);
 
-        _accountRepository.GetByIdAsync(command.Id).Returns(new Account());
+        _accountRepository.GetByIdAsync(command.Id).Returns(new Account
+        {
+            Alias = "Alias", CustomerName = "Jhon Doe"
+        });
 
         var handler = new DeleteAccountCommandHandler(_accountRepository);
 

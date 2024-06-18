@@ -1,10 +1,13 @@
 using System.Reflection;
 using Application.Caching;
+using Application.Features.Customers.Events;
 using Domain.Contracts;
 using Infrastructure.Caching;
+using Infrastructure.Consumers;
 using Infrastructure.MongoContext;
 using Infrastructure.Repositories;
 using Infrastructure.Settings;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
@@ -18,6 +21,7 @@ public static class ServicesInjection
         services.AddMongoDb(configuration);
         services.AddRepositories();
         services.AddCaching(configuration);
+        services.AddRabbitMq(configuration);
     }
 
     private static void AddMongoDb(this IServiceCollection services, IConfiguration configuration)
@@ -45,9 +49,30 @@ public static class ServicesInjection
     {
         services.AddStackExchangeRedisCache(redisOptions =>
         {
-            var connection = configuration.GetConnectionString("Redis");
+            var connection = configuration["Redis:Url"];
             redisOptions.Configuration = connection;
         });
         services.AddSingleton<ICacheService, CacheService>();
+    }
+
+    private static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddMassTransit(busConfigurator =>
+        {
+            busConfigurator.SetKebabCaseEndpointNameFormatter();
+
+            busConfigurator.UsingRabbitMq((context, configurator) =>
+            {
+                configurator.Host(new Uri(configuration["MessageBroker:Host"]!), h =>
+                {
+                    h.Username(configuration["MessageBroker:Username"]!);
+                    h.Password(configuration["MessageBroker:Password"]!);
+                });
+
+                configurator.ConfigureEndpoints(context);
+            });
+
+            busConfigurator.AddConsumer<CustomerNameUpdatedConsumer>();
+        });
     }
 }

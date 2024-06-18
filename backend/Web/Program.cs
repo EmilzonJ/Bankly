@@ -41,6 +41,7 @@ async Task SeedDataAsync(WebApplication application)
     try
     {
         var mongoDbContext = services.GetRequiredService<MongoDbContext>();
+        mongoDbContext.CreateIndexes();
         await mongoDbContext.SeedCollectionsAsync();
     }
     catch (Exception ex)

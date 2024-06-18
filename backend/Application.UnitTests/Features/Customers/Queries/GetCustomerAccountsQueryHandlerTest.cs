@@ -64,6 +64,8 @@ public class GetCustomerAccountsQueryHandlerTest
             {
                 Id = ObjectId.GenerateNewId(),
                 CustomerId = query.CustomerId,
+                Alias = "Account 1",
+                CustomerName = "Jhon Doe",
                 Balance = 1000,
                 Type = AccountType.Savings,
                 CreatedAt = DateTime.UtcNow,

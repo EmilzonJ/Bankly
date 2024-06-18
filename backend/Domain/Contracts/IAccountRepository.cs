@@ -13,4 +13,20 @@ public interface IAccountRepository
     Task UpdateAsync(Account account);
     Task DeleteAsync(Account account);
     Task<bool> SameAliasExistsAsync(ObjectId customerId, string alias);
+
+    Task<int> CountAsync(
+        string? alias,
+        string? customerName,
+        DateOnly? createdAt
+    );
+
+    Task<IEnumerable<Account>> GetPagedAsync(
+        int pageNumber,
+        int pageSize,
+        string? alias,
+        string? customerName,
+        DateOnly? createdAt
+    );
+
+    Task UpdateManyAsync(List<Account> accounts);
 }
