@@ -13,12 +13,13 @@ import ListPresentation, {
   FilterState,
   LocalPagination,
 } from '@/core/features/customers/components/ListPresentation';
+import { Routes } from '@/routes/routes';
 import { PageContainer, ProCoreActionType } from '@ant-design/pro-components';
 import { App } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const CustomerListPage = () => {
+function Page() {
   const [pagination, setPagination] = useState<LocalPagination>({
     current: 1,
     pageSize: 10,
@@ -68,7 +69,7 @@ const CustomerListPage = () => {
         action.startEditable?.(customer.id);
       },
       '3': () => {
-        navigate(`/customers/detail/${customer.id}`);
+        navigate(`${Routes.CUSTOMERS_INDEX}/${customer.id}`);
       },
     };
 
@@ -90,6 +91,6 @@ const CustomerListPage = () => {
       />
     </PageContainer>
   );
-};
+}
 
-export default CustomerListPage;
+export default Page;

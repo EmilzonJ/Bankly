@@ -58,6 +58,7 @@ function DetailPresentation({
             if (rowKey === 'Nueva') {
               await onCreateAccount({
                 balance: data.balance as number,
+                alias: data.alias as string,
               });
               form.resetFields();
               return true;

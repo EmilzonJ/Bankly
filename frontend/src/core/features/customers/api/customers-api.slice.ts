@@ -33,10 +33,10 @@ export const customersApi = baseApiChild.injectEndpoints({
       providesTags: [{ type: 'Account' }],
     }),
     createAccount: builder.mutation<Account, CreateAccount>({
-      query: ({ balance, customerId }) => ({
+      query: ({ balance, customerId, alias }) => ({
         url: `customers/${customerId}/accounts`,
         method: 'POST',
-        body: { balance },
+        body: { balance, alias },
       }),
       invalidatesTags: [{ type: 'Account' }],
     }),

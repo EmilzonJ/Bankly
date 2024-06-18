@@ -9,7 +9,7 @@ import DetailPresentation from '@/core/features/customers/components/DetailPrese
 import { PageContainer } from '@ant-design/pro-components';
 import { useParams } from 'react-router-dom';
 
-function CustomerDetailPage() {
+function Page() {
   const { customerId } = useParams<{ customerId: string }>();
   const { data: customer } = useGetCustomerByIdQuery(customerId, {
     skip: !customerId,
@@ -27,11 +27,13 @@ function CustomerDetailPage() {
 
   const handleCreateAccount = async ({
     balance,
+    alias
   }: Omit<CreateAccount, 'customerId'>) => {
     if (!customerId) return;
     await createAccountMutation({
       balance,
       customerId: customerId as string,
+      alias
     }).unwrap();
   };
 
@@ -48,4 +50,4 @@ function CustomerDetailPage() {
   );
 }
 
-export default CustomerDetailPage;
+export default Page;

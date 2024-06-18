@@ -12,5 +12,6 @@ export type Account = {
 
 export type CreateAccount = {
   balance: number;
+  alias: string;
   customerId: string;
 };
