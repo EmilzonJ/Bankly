@@ -12,4 +12,5 @@ public interface IAccountRepository
     Task AddAsync(Account account);
     Task UpdateAsync(Account account);
     Task DeleteAsync(Account account);
+    Task<bool> SameAliasExistsAsync(ObjectId customerId, string alias);
 }

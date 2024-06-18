@@ -49,6 +49,15 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
         await _transactions.UpdateManyAsync(filter, update);
     }
 
+    public async Task<bool> SameAliasExistsAsync(ObjectId customerId, string alias)
+        => await _accounts.Find(
+            CreateActiveFilter(
+                Builders<Account>
+                    .Filter
+                    .Where(
+                        a => a.CustomerId == customerId && a.Alias.Equals(alias, StringComparison.CurrentCultureIgnoreCase)
+                    ))).AnyAsync();
+
     private static FilterDefinition<Account> CreateActiveFilter(FilterDefinition<Account>? additionalFilter = null)
     {
         var builder = Builders<Account>.Filter;

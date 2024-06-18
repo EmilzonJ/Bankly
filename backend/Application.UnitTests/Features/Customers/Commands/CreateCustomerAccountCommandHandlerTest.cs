@@ -14,7 +14,7 @@ public class CreateCustomerAccountCommandHandlerTest
     {
         // Arrange
         var customerId = new ObjectId();
-        var command = new CreateCustomerAccountCommand(customerId, 0);
+        var command = new CreateCustomerAccountCommand(customerId, "Alias", 0);
         var handler = new CreateCustomerAccountCommandHandler(_customerRepository, _accountRepository);
 
         _customerRepository.ExistsAsync(Arg.Any<ObjectId>()).Returns(false);
@@ -37,7 +37,7 @@ public class CreateCustomerAccountCommandHandlerTest
         // Arrange
         const int invalidBalance = -1;
         var customerId = new ObjectId();
-        var command = new CreateCustomerAccountCommand(customerId, invalidBalance);
+        var command = new CreateCustomerAccountCommand(customerId, "Alias", invalidBalance);
         var handler = new CreateCustomerAccountCommandHandler(_customerRepository, _accountRepository);
 
         _customerRepository.ExistsAsync(Arg.Any<ObjectId>()).Returns(true);
@@ -54,12 +54,35 @@ public class CreateCustomerAccountCommandHandlerTest
         result.Error.Should().BeEquivalentTo(AccountErrors.NegativeBalance(invalidBalance));
     }
 
+    [Fact(DisplayName = "Handle_Should_ResturnsResultConflict_WhenSameAliasExists")]
+    public async Task Handle_Should_ResturnsResultConflict_WhenSameAliasExists()
+    {
+        // Arrange
+        var customerId = new ObjectId();
+        var command = new CreateCustomerAccountCommand(customerId, "Alias", 5);
+        var handler = new CreateCustomerAccountCommandHandler(_customerRepository, _accountRepository);
+
+        _customerRepository.ExistsAsync(Arg.Any<ObjectId>()).Returns(true);
+        _accountRepository.SameAliasExistsAsync(Arg.Any<ObjectId>(), Arg.Any<string>()).Returns(true);
+
+        // Act
+        Result<string> result = await handler.Handle(command, default);
+
+        // Assert
+        await _accountRepository
+            .DidNotReceive()
+            .AddAsync(Arg.Any<Account>());
+
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().BeEquivalentTo(AccountErrors.SameAliasExsists("Alias"));
+    }
+
     [Fact(DisplayName = "Handle_Should_ReturnsResultValueId_WhenAccountIsValid")]
     public async Task Handle_Should_ReturnsResultValueId_WhenAccountIsValid()
     {
         // Arrange
         var customerId = new ObjectId();
-        var command = new CreateCustomerAccountCommand(customerId, 0);
+        var command = new CreateCustomerAccountCommand(customerId, "Alias", 0);
         var handler = new CreateCustomerAccountCommandHandler(_customerRepository, _accountRepository);
 
         _customerRepository.ExistsAsync(Arg.Any<ObjectId>()).Returns(true);

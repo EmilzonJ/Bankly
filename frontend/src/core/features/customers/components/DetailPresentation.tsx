@@ -44,7 +44,7 @@ function DetailPresentation({
         headerTitle='Cuentas del cliente'
         rowKey='id'
         recordCreatorProps={{
-          position: 'top',
+          position: 'bottom',
           record: () => ({
             id: 'Nueva',
             balance: 0,
@@ -80,13 +80,17 @@ function DetailPresentation({
             title: 'Identificador',
             dataIndex: 'id',
             hideInSearch: true,
-            width: 200,
             editable: false,
+            width: 300,
+          },
+          {
+            title: 'Alias',
+            dataIndex: 'alias',
+            width: 300,
           },
           {
             title: 'Balance',
             dataIndex: 'balance',
-            width: 200,
           },
           {
             editable: false,

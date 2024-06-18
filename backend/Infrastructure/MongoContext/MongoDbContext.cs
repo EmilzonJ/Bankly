@@ -1,7 +1,7 @@
 using Domain.Collections;
 using Domain.Enums;
-using Infrastructure.Base;
 using Infrastructure.Settings;
+using Infrastructure.Utils;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -65,7 +65,7 @@ public class MongoDbContext
                 Id = ObjectId.GenerateNewId(),
                 Alias = "Cuenta principal",
                 CustomerId = c.Id,
-                Balance = 500,
+                Balance = 400,
                 Type = AccountType.Savings
             }).ToList();
 

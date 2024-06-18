@@ -19,6 +19,9 @@ public record CreateCustomerAccountCommandHandler(
         if (account.Balance < 0)
             return Result.Failure<string>(AccountErrors.NegativeBalance(account.Balance));
 
+        if (await AccountRepository.SameAliasExistsAsync(command.CustomerId, command.Alias))
+            return Result.Failure<string>(AccountErrors.SameAliasExsists(command.Alias));
+
         await AccountRepository.AddAsync(account);
 
         return account.Id.ToString();

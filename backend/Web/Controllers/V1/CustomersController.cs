@@ -88,7 +88,7 @@ public class CustomersController(ISender sender) : BaseController
         var idParsed = id.ToObjectId();
         if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
 
-        var result = await sender.Send(new CreateCustomerAccountCommand(idParsed.Value, request.Balance));
+        var result = await sender.Send(new CreateCustomerAccountCommand(idParsed.Value, request.Alias, request.Balance));
 
         return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
     }

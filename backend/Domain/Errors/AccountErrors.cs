@@ -14,4 +14,9 @@ public static class AccountErrors
         "Accounts.NotFound",
         $"The account with id {id} was not found."
     );
+
+    public static Error SameAliasExsists(string alias) => Error.Conflict(
+        "Accounts.SameAliasExists",
+        $"You have an account with the same alias {alias}"
+    );
 }

@@ -12,6 +12,7 @@ public static class CustomerAccountMapping
         {
             Id = account.Id.ToString(),
             CustomerId = account.CustomerId.ToString(),
+            Alias = account.Alias,
             Balance = account.Balance,
             Type = account.Type,
             CreatedAt = account.CreatedAt,
@@ -29,7 +30,8 @@ public static class CustomerAccountMapping
         return new Account
         {
             CustomerId = command.CustomerId,
-            Balance = command.Balance
+            Balance = command.Balance,
+            Alias = command.Alias
         };
     }
 }

@@ -10,7 +10,7 @@ public class TransactionRepository(MongoDbContext context) : ITransactionReposit
 {
     private readonly IMongoCollection<Transaction> _transactions = context.Transactions;
 
-    public async Task<Transaction> GetByIdAsync(ObjectId id)
+    public async Task<Transaction?> GetByIdAsync(ObjectId id)
     {
         return await _transactions.Find(t => t.Id == id).FirstOrDefaultAsync();
     }

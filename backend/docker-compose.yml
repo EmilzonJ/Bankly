@@ -13,6 +13,16 @@
       - bankly-db
     networks:
       - bankly-network
+  bankly-cache:
+    image: redis:latest
+    container_name: bankly-cache
+    restart: unless-stopped
+    volumes:
+      - redis-volume_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - bankly-network
   bankly-db:
     image: mongo:latest
     container_name: bankly-db
@@ -44,5 +54,6 @@ networks:
     name: bankly-network
 
 volumes:
+  redis-volume_data:
   bankly-db:
     driver: local

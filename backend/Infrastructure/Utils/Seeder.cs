@@ -3,7 +3,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using MongoDB.Driver;
 
-namespace Infrastructure.Base;
+namespace Infrastructure.Utils;
 
 public class Seeder<T>(IMongoCollection<T> collection)
 {
