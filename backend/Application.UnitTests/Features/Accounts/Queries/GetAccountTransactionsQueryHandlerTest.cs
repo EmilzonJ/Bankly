@@ -59,8 +59,46 @@ public class GetAccountTransactionsQueryHandlerTest
         var query = new GetAccountTransactionsQuery(new ObjectId());
         var transactions = new List<Transaction>
         {
-            new() {Id = new ObjectId(), Description = "Description", Amount = 100, Type = TransactionType.Deposit},
-            new() {Id = new ObjectId(), Description = "Description", Amount = 50, Type = TransactionType.Withdrawal}
+            new()
+            {
+                Id = new ObjectId(),
+                Description = "Description",
+                Amount = 100,
+                Type = TransactionType.Deposit,
+                SourceAccountId = ObjectId.GenerateNewId(),
+                SourceAccount = new TransactionAccount
+                {
+                    Id = ObjectId.GenerateNewId(),
+                    Alias = "Account 1",
+                    CustomerId = ObjectId.GenerateNewId(),
+                    Customer = new TransactionAccountCustomer
+                    {
+                        Id = ObjectId.GenerateNewId(),
+                        Name = "Jhon Doe",
+                        Email = "jhon.doe@mail.com"
+                    }
+                }
+            },
+            new()
+            {
+                Id = new ObjectId(),
+                Description = "Description",
+                Amount = 50,
+                Type = TransactionType.Withdrawal,
+                SourceAccountId = ObjectId.GenerateNewId(),
+                SourceAccount = new TransactionAccount
+                {
+                    Id = ObjectId.GenerateNewId(),
+                    Alias = "Account 1",
+                    CustomerId = ObjectId.GenerateNewId(),
+                    Customer = new TransactionAccountCustomer
+                    {
+                        Id = ObjectId.GenerateNewId(),
+                        Name = "Jhon Doe",
+                        Email = "jhon.doe@mail.com"
+                    }
+                }
+            }
         };
 
         _accountRepository.ExistsAsync(query.Id).Returns(true);

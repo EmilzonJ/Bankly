@@ -72,8 +72,8 @@ public class MongoDbContext
     private void CreateTransactionIndexes()
     {
         var typeIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.Type);
-        var sourceAccountIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.SourceAccountId);
-        var destinationAccountIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.DestinationAccountId);
+        var sourceAccountIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.SourceAccount);
+        var destinationAccountIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.DestinationAccount);
         var createdAtIndexKeys = Builders<Transaction>.IndexKeys.Ascending(t => t.CreatedAt);
 
         Transactions.Indexes.CreateOne(new CreateIndexModel<Transaction>(typeIndexKeys));
@@ -106,6 +106,7 @@ public class MongoDbContext
                 Alias = "Cuenta principal",
                 CustomerId = c.Id,
                 CustomerName = c.Name,
+                CustomerEmail = c.Email,
                 Balance = 400,
                 Type = AccountType.Savings
             }).ToList();
@@ -123,6 +124,18 @@ public class MongoDbContext
             {
                 Id = ObjectId.GenerateNewId(),
                 SourceAccountId = account.Id,
+                SourceAccount = new TransactionAccount
+                {
+                    Id = account.Id,
+                    Alias = account.Alias,
+                    CustomerId = account.CustomerId,
+                    Customer = new TransactionAccountCustomer
+                    {
+                        Id = account.CustomerId,
+                        Name = account.CustomerName,
+                        Email = account.CustomerEmail
+                    }
+                },
                 Description = "Depósito inicial",
                 Amount = 500,
                 Type = TransactionType.Deposit
@@ -132,6 +145,18 @@ public class MongoDbContext
             {
                 Id = ObjectId.GenerateNewId(),
                 SourceAccountId = account.Id,
+                SourceAccount = new TransactionAccount
+                {
+                    Id = account.Id,
+                    Alias = account.Alias,
+                    CustomerId = account.CustomerId,
+                    Customer = new TransactionAccountCustomer
+                    {
+                        Id = account.CustomerId,
+                        Name = account.CustomerName,
+                        Email = account.CustomerEmail
+                    }
+                },
                 Description = "Retiro inicial",
                 Amount = 100,
                 Type = TransactionType.Withdrawal

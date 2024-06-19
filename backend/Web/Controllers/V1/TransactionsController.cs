@@ -1,3 +1,4 @@
+using Application.Extensions;
 using Application.Features.Transactions.Models.Filters;
 using Application.Features.Transactions.Models.Responses;
 using Application.Features.Transactions.Queries;
@@ -10,7 +11,6 @@ namespace Web.Controllers.V1;
 
 public class TransactionsController(ISender sender) : BaseController
 {
-    [HttpGet]
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedList<TransactionResponse>))]
@@ -29,4 +29,21 @@ public class TransactionsController(ISender sender) : BaseController
 
         return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
     }
+
+    [HttpGet("{id}")]
+    [Produces("application/json")]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TransactionResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IResult> GetAsync(string id)
+    {
+        var idParsed = id.ToObjectId();
+        if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
+
+        var result = await sender.Send(new GetTransactionByIdQuery(idParsed.Value));
+
+        return result.IsSuccess ? Results.Ok(result.Value) : result.ToProblemDetails();
+    }
+
 }

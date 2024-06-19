@@ -21,12 +21,38 @@ namespace Application.UnitTests.Features.Transactions.Queries
                 new Transaction
                 {
                     Id = ObjectId.GenerateNewId(), Description = "Transaction 1", Amount = 1000,
-                    Type = TransactionType.Deposit
+                    Type = TransactionType.Deposit,
+                    SourceAccountId = ObjectId.GenerateNewId(),
+                    SourceAccount = new TransactionAccount
+                    {
+                        Id = ObjectId.GenerateNewId(),
+                        Alias = "Account 1",
+                        CustomerId = ObjectId.GenerateNewId(),
+                        Customer = new TransactionAccountCustomer
+                        {
+                            Id = ObjectId.GenerateNewId(),
+                            Name = "Jhon Doe",
+                            Email = "jhon.doe@mail.com"
+                        }
+                    }
                 },
                 new Transaction
                 {
                     Id = ObjectId.GenerateNewId(), Description = "Transaction 2", Amount = 2000,
-                    Type = TransactionType.Withdrawal
+                    Type = TransactionType.Withdrawal,
+                    SourceAccountId = ObjectId.GenerateNewId(),
+                    SourceAccount = new TransactionAccount
+                    {
+                        Id = ObjectId.GenerateNewId(),
+                        Alias = "Account 1",
+                        CustomerId = ObjectId.GenerateNewId(),
+                        Customer = new TransactionAccountCustomer
+                        {
+                            Id = ObjectId.GenerateNewId(),
+                            Name = "Jhon Doe",
+                            Email = "jhon.doe@mail.com"
+                        }
+                    }
                 }
             ];
 
@@ -91,7 +117,20 @@ namespace Application.UnitTests.Features.Transactions.Queries
                     Id = new ObjectId(),
                     Description = "Transaction 1",
                     Amount = 1000,
-                    Type = TransactionType.Deposit
+                    Type = TransactionType.Deposit,
+                    SourceAccountId = ObjectId.GenerateNewId(),
+                    SourceAccount = new TransactionAccount
+                    {
+                        Id = ObjectId.GenerateNewId(),
+                        Alias = "Account 1",
+                        CustomerId = ObjectId.GenerateNewId(),
+                        Customer = new TransactionAccountCustomer
+                        {
+                            Id = ObjectId.GenerateNewId(),
+                            Name = "Jhon Doe",
+                            Email = "jhon.doe@mail.com"
+                        }
+                    }
                 }
             ];
 

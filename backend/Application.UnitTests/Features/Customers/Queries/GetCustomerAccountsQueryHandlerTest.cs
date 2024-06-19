@@ -66,6 +66,7 @@ public class GetCustomerAccountsQueryHandlerTest
                 CustomerId = query.CustomerId,
                 Alias = "Account 1",
                 CustomerName = "Jhon Doe",
+                CustomerEmail = "jhon.doe@mail.com",
                 Balance = 1000,
                 Type = AccountType.Savings,
                 CreatedAt = DateTime.UtcNow,

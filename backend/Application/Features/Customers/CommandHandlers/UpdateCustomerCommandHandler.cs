@@ -20,6 +20,7 @@ public record UpdateCustomerCommandHandler(
             return Result.Failure(CustomerErrors.EmailTaken(command.Email));
 
         bool isNewName = command.Name != customer.Name;
+        bool isNewEmail = command.Email != customer.Email;
 
         customer.Update(command.Name, command.Email);
 
@@ -27,6 +28,9 @@ public record UpdateCustomerCommandHandler(
 
         if (isNewName)
             await MessagePublisher.Publish(new CustomerNameUpdatedEvent(command.Id.ToString(), command.Name));
+
+        if (isNewEmail)
+            await MessagePublisher.Publish(new CustomerEmailUpdatedEvent(command.Id.ToString(), command.Email));
 
         return Result.Success();
     }

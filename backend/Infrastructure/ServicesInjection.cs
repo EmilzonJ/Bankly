@@ -73,6 +73,7 @@ public static class ServicesInjection
             });
 
             busConfigurator.AddConsumer<CustomerNameUpdatedConsumer>();
+            busConfigurator.AddConsumer<CustomerEmailUpdatedConsumer>();
         });
     }
 }

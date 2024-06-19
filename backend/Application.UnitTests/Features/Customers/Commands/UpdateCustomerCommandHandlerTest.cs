@@ -119,11 +119,60 @@ public class UpdateCustomerCommandHandlerTest
                 x.NewName == command.Name
             ));
 
+        await _messagePublisher
+            .Received(1)
+            .Publish(Arg.Is<CustomerEmailUpdatedEvent>(x =>
+                x.CustomerId == customerId.ToString() &&
+                x.NewEmail == command.Email
+            ));
+
         result.IsSuccess.Should().BeTrue();
     }
 
     [Fact(DisplayName = "Handle_Should_ReturnsResultSuccessAndDontPublishEvent_WhenNameIsTheSame")]
     public async Task Handle_Should_ReturnsResultSuccessAndDontPublishEvent_WhenNameIsTheSame()
+    {
+        // Arrange
+        var customerId = new ObjectId();
+        var customer = new Customer
+        {
+            Id = customerId,
+            Name = "Jhon Doe",
+            Email = "jhon.doe@mail.com"
+        };
+
+        var command = new UpdateCustomerCommand(
+            customerId,
+            "Jhon Doe",
+            "jhon.updated@mail"
+        );
+
+        var handler = new UpdateCustomerCommandHandler(_customerRepository, _messagePublisher);
+
+        _customerRepository.GetByIdAsync(customerId).Returns(customer);
+        _customerRepository.EmailExistsAsync(command.Email).Returns(false);
+
+        // Act
+        Result result = await handler.Handle(command, default);
+
+        // Assert
+        await _customerRepository
+            .Received(1)
+            .UpdateAsync(Arg.Is<Customer>(x =>
+                x.Id == customerId &&
+                x.Name == command.Name &&
+                x.Email == command.Email
+            ));
+
+        await _messagePublisher
+            .DidNotReceive()
+            .Publish(Arg.Any<CustomerNameUpdatedEvent>());
+
+        result.IsSuccess.Should().BeTrue();
+    }
+
+    [Fact(DisplayName = "Handle_Should_ReturnsResultSuccessAndDontPublishEvent_WhenEmailIsTheSame")]
+    public async Task Handle_Should_ReturnsResultSuccessAndDontPublishEvent_WhenEmailIsTheSame()
     {
         // Arrange
         var customerId = new ObjectId();

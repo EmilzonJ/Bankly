@@ -15,7 +15,7 @@ public record CreateCustomerAccountCommandHandler(
         if (customer is null)
             return Result.Failure<string>(CustomerErrors.NotFound(command.CustomerId));
 
-        var account = command.ToEntity(customer.Name);
+        var account = command.ToEntity(customer.Name, customer.Email);
 
         if (account.Balance < 0)
             return Result.Failure<string>(AccountErrors.NegativeBalance(account.Balance));

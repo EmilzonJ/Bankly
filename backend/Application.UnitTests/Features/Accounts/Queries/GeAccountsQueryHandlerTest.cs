@@ -21,12 +21,12 @@ namespace Application.UnitTests.Features.Accounts.Queries
                 new Account
                 {
                     Id = new ObjectId(), Alias = "Account 1", Balance = 1000, Type = AccountType.Savings,
-                    CustomerName = "Jhon Doe"
+                    CustomerName = "Jhon Doe", CustomerEmail = "jhon.doe@mail.com"
                 },
                 new Account
                 {
                     Id = new ObjectId(), Alias = "Account 2", Balance = 2000, Type = AccountType.Savings,
-                    CustomerName = "Jhon Doe"
+                    CustomerName = "Jhon Doe", CustomerEmail = "jhon.doe@mail.com"
                 }
             ];
 
@@ -92,7 +92,8 @@ namespace Application.UnitTests.Features.Accounts.Queries
                     Alias = "Account 1",
                     Balance = 1000,
                     Type = AccountType.Savings,
-                    CustomerName = "Jhon Doe"
+                    CustomerName = "Jhon Doe",
+                    CustomerEmail = "jhon.doe@mail.com"
                 }
             ];
 
@@ -106,7 +107,6 @@ namespace Application.UnitTests.Features.Accounts.Queries
             Result<PaginatedList<AccountResponse>> result = await handler.Handle(query, default);
 
             // Assert
-
             await _accountRepository
                 .Received(1)
                 .GetPagedAsync(1, 10, "Account 1", null, null);
