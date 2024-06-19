@@ -3,7 +3,7 @@ import { ProDescriptions, ProTable } from "@ant-design/pro-components";
 import { Account } from "@/core/types/account.type";
 import { accountTypesMap } from "../utils/account-types-map.util";
 import { Badge } from "antd";
-import { TransactionTypes } from "@/core/enums/transaction-types.enum";
+import { TransactionTypes, transactionTypesColors } from "@/core/enums/transaction-types.enum";
 import { transactionTypesMap } from "../utils/transaction-types-map.util";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 
@@ -12,13 +12,6 @@ type DetailPresentationProps = {
   accountTransactions?: Transaction[];
   loadingTransactions: boolean;
   reloadAccounts: () => void;
-};
-
-const typeColors = {
-  [TransactionTypes.DEPOSIT]: "green",
-  [TransactionTypes.WITHDRAWAL]: "red",
-  [TransactionTypes.OUTGOING_TRANSFER]: "red",
-  [TransactionTypes.INCOMING_TRANSFER]: "green",
 };
 
 function AccountDetailPresentation({
@@ -138,7 +131,7 @@ function AccountDetailPresentation({
               }
               return (
                 <Badge
-                  color={typeColors[entity.type]}
+                  color={transactionTypesColors[entity.type]}
                   text={transactionTypesMap(entity.type)}
                 />
               );

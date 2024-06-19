@@ -1,11 +1,8 @@
-import {
-    useGetTransactionsQuery
-} from "@/core/features/transactions/api/transactions-api.slice";
+import { useGetTransactionsQuery } from "@/core/features/transactions/api/transactions-api.slice";
 import TransactionListPresentation, {
-    FilterState,
+  FilterState,
 } from "@/core/features/transactions/components/ListPresentation";
 import { LocalPagination } from "@/core/types/local-pagination.type";
-import { Transaction } from "@/core/types/transaction.type";
 
 import { Routes } from "@/routes/routes";
 import { PageContainer } from "@ant-design/pro-components";
@@ -28,26 +25,20 @@ function TransactionListPage() {
 
   const navigate = useNavigate();
 
-  const onSelect = (key: string, transaction: Transaction) => {
-    const actions: Record<string, () => void> = {
-      "1": () => {
-        navigate(`${Routes.TRANSACTIONS_INDEX}/${transaction.id}`);
-      },
-    };
-
-    actions[key]?.();
+  const onSelectRow = (id: string) => {
+    navigate(`${Routes.TRANSACTIONS_INDEX}/${id}`);
   };
 
   return (
     <PageContainer>
       <TransactionListPresentation
         isLoading={isLoading}
-        onSelectOptions={onSelect}
         pagination={pagination}
         refetch={refetch}
         setFilters={setFilters}
         setPagination={setPagination}
         data={data}
+        onSelectRow={onSelectRow}
       />
     </PageContainer>
   );

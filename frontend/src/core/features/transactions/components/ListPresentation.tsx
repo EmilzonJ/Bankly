@@ -1,23 +1,24 @@
+import {
+  TransactionTypes,
+  transactionTypesColors,
+} from "@/core/enums/transaction-types.enum";
 import { Paginated } from "@/core/types/paginated.type";
 import { Transaction } from "@/core/types/transaction.type";
 import {
-  DeleteOutlined,
-  EllipsisOutlined,
-  EyeOutlined,
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  EllipsisOutlined
 } from "@ant-design/icons";
 import {
-  EditableProTable,
-  ProCoreActionType,
+  EditableProTable
 } from "@ant-design/pro-components";
-import { Dropdown } from "antd";
-import { ItemType } from "antd/es/menu/interface";
+import { Badge } from "antd";
+import { transactionTypesMap } from "../../accounts/utils/transaction-types-map.util";
 
 export type FilterState = {
   type?: string;
-  sourceAccountId?: string;
-  destinationAccountId?: string;
   reference?: string;
-  customerName?: string;
+  createdAt?: string;
 };
 
 export type LocalPagination = {
@@ -31,11 +32,7 @@ type ListPresentationProps = {
   setPagination: (data: LocalPagination) => void;
   pagination: LocalPagination;
   data?: Paginated<Transaction>;
-  onSelectOptions: (
-    key: string,
-    entity: Transaction,
-    action: ProCoreActionType<object>
-  ) => void;
+  onSelectRow: (id: string) => void;
   refetch: () => void;
 };
 
@@ -44,11 +41,10 @@ function TransactionListPresentation({
   setFilters,
   setPagination,
   pagination,
-  onSelectOptions,
   data,
-  refetch,
+  onSelectRow,
+  refetch
 }: ListPresentationProps) {
-
   return (
     <EditableProTable<Partial<Transaction>>
       loading={isLoading}
@@ -81,74 +77,112 @@ function TransactionListPresentation({
       }}
       onSubmit={(values) => {
         setFilters({
-          sourceAccountId: values.sourceAccountId ?? "",
-              type: values.type ?? "",
-              destinationAccountId: values.destinationAccountId ?? "",
-              reference: values.reference ?? "",
-              customerName: values.customerName ?? "",
+          type: values.type ?? "",
+          reference: values.reference ?? "",
+          createdAt: values.createdAt ?? "",
         });
       }}
       value={data?.items || []}
       columns={[
         {
-          title: "Correo",
-          dataIndex: "email",
-          filters: true,
-          valueType: "text",
+          title: "Referencia",
+          dataIndex: "id",
+          editable: false,
+          width: 300,
         },
         {
-          title: "Nombre",
-          dataIndex: "name",
-          filters: true,
-          valueType: "text",
+          title: "Descripción",
+          dataIndex: "description",
+          hideInSearch: true,
+          editable: false,
+          width: 300,
         },
         {
-          title: "Fecha de registro",
-          dataIndex: "registeredAt",
+          title: "Monto de la transacción",
+          dataIndex: "amount",
+          hideInSearch: true,
+          width: 300,
+          render: (_, entity) => {
+            if (entity.type === undefined) {
+              return null;
+            }
+
+            const isDepositOrIncoming =
+              entity.type === TransactionTypes.DEPOSIT ||
+              entity.type === TransactionTypes.INCOMING_TRANSFER;
+
+            return (
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {isDepositOrIncoming ? (
+                  <ArrowUpOutlined style={{ color: "green", marginRight: 8 }} />
+                ) : (
+                  <ArrowDownOutlined style={{ color: "red", marginRight: 8 }} />
+                )}
+                <span>{`MXN ${entity.amount}`}</span>
+              </div>
+            );
+          },
+        },
+        {
+          editable: false,
+          title: "Tipo",
+          valueType: "select",
+          fieldProps: {
+            options: [
+              {
+                label: "Depósito",
+                value: TransactionTypes.DEPOSIT,
+              },
+              {
+                label: "Retiro",
+                value: TransactionTypes.WITHDRAWAL,
+              },
+              {
+                label: "Transferencia saliente",
+                value: TransactionTypes.OUTGOING_TRANSFER,
+              },
+              {
+                label: "Transferencia entrante",
+                value: TransactionTypes.INCOMING_TRANSFER,
+              },
+            ],
+          },
+          dataIndex: "type",
+          render: (_, entity) => {
+            if (entity.type === undefined) {
+              return null;
+            }
+            return (
+              <Badge
+                color={transactionTypesColors[entity.type]}
+                text={transactionTypesMap(entity.type)}
+              />
+            );
+          },
+        },
+        {
+          editable: false,
+          title: "Creada en",
+          dataIndex: "createdAt",
           valueType: "date",
-          filters: true,
         },
         {
           title: "Acciones",
           dataIndex: "option",
           valueType: "option",
           width: 200,
-          render: (_, entity, _2, action) => (
-            <Dropdown
-              menu={{
-                items,
-                onClick: (e) =>
-                  onSelectOptions(
-                    e.key,
-                    entity as Transaction,
-                    action as ProCoreActionType<object>
-                  ),
+          render: (_, entity) => (
+            <EllipsisOutlined
+              style={{
+                cursor: "pointer",
               }}
-            >
-              <EllipsisOutlined
-                style={{
-                  cursor: "pointer",
-                }}
-              />
-            </Dropdown>
+              onClick={() => onSelectRow(entity.id!)}
+            />
           ),
         },
       ]}
     />
   );
 }
-
-const items: ItemType[] = [
-  {
-    key: '1',
-    label: 'Eliminar',
-    icon: <DeleteOutlined />,
-  },
-  {
-    key: '3',
-    label: 'Ver detalle',
-    icon: <EyeOutlined />,
-  },
-];
 
 export default TransactionListPresentation;
