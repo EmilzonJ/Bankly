@@ -45,23 +45,54 @@ function TransactionDetailPresentation({
   }, [data, form]);
 
   const getSourceAccountTitle = useCallback(() => {
-    if (data?.type === TransactionTypes.DEPOSIT || data?.type === TransactionTypes.INCOMING_TRANSFER) {
+    if (
+      data?.type === TransactionTypes.DEPOSIT ||
+      data?.type === TransactionTypes.INCOMING_TRANSFER
+    ) {
       return "Depósito en cuenta:";
     }
 
-    if (data?.type === TransactionTypes.WITHDRAWAL || data?.type === TransactionTypes.OUTGOING_TRANSFER) {
+    if (
+      data?.type === TransactionTypes.WITHDRAWAL ||
+      data?.type === TransactionTypes.OUTGOING_TRANSFER
+    ) {
       return "Retiro en cuenta:";
     }
-
   }, [data]);
 
   const getDestinationAccountTitle = useCallback(() => {
     if (data?.type === TransactionTypes.INCOMING_TRANSFER) {
-      return "Retiro en cuenta:";
+      return "Proveniente de cuenta:";
     }
 
     if (data?.type === TransactionTypes.OUTGOING_TRANSFER) {
-      return "Depósito en cuenta:";
+      return "Cuenta destino:";
+    }
+  }, [data]);
+
+  const getSourceAccountTitleColor = useCallback(() => {
+    if (
+      data?.type === TransactionTypes.DEPOSIT ||
+      data?.type === TransactionTypes.INCOMING_TRANSFER
+    ) {
+      return { color: "green" };
+    }
+
+    if (
+      data?.type === TransactionTypes.WITHDRAWAL ||
+      data?.type === TransactionTypes.OUTGOING_TRANSFER
+    ) {
+      return { color: "red" };
+    }
+  }, [data]);
+
+  const getDestinationAccountTitleColor = useCallback(() => {
+    if (data?.type === TransactionTypes.INCOMING_TRANSFER) {
+      return { color: "red" };
+    }
+
+    if (data?.type === TransactionTypes.OUTGOING_TRANSFER) {
+      return { color: "green" };
     }
   }, [data]);
 
@@ -93,6 +124,7 @@ function TransactionDetailPresentation({
         <Divider />
         <ProFormGroup
           title={getSourceAccountTitle()}
+          titleStyle={getSourceAccountTitleColor()}
           extra={
             <Button type="default" onClick={onSeeSourceAccount}>
               Ver cuenta
@@ -111,9 +143,12 @@ function TransactionDetailPresentation({
             name={["sourceAccount", "customer", "email"]}
           />
         </ProFormGroup>
+
         <Divider />
+
         {data?.destinationAccount && (
           <ProFormGroup
+            titleStyle={getDestinationAccountTitleColor()}
             title={getDestinationAccountTitle()}
             extra={
               <Button type="default" onClick={onSeeDestinationAccount}>

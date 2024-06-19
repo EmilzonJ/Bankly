@@ -4,10 +4,10 @@ import { Customer } from "@/core/types/customer.type";
 import { CreateTransaction } from "@/core/types/transaction.type";
 import {
   ProForm,
-  ProFormDigit,
   ProFormGroup,
+  ProFormMoney,
   ProFormSelect,
-  ProFormTextArea,
+  ProFormText,
 } from "@ant-design/pro-components";
 import { useForm, useWatch } from "antd/es/form/Form";
 import { FormInstance } from "antd/lib";
@@ -36,6 +36,7 @@ type ListPresentationProps = {
 
 const useOnChangeFieldParent = (form: FormInstance) => {
   const type = useWatch("type", form);
+  const description = useWatch("description", form);
   const customerId = useWatch("customerId", form);
   const sourceAccountId = useWatch("sourceAccountId", form);
   const amount = useWatch("amount", form);
@@ -43,6 +44,7 @@ const useOnChangeFieldParent = (form: FormInstance) => {
 
   return {
     type,
+    description,
     customerId,
     sourceAccountId,
     amount,
@@ -57,7 +59,7 @@ function CreateTransactionPresentation({
 }: ListPresentationProps) {
   const [form] = useForm();
 
-  const { type, customerId, sourceAccountId, amount, customerToId } =
+  const { type, description, customerId, sourceAccountId, amount, customerToId } =
     useOnChangeFieldParent(form);
   const [souceCustomerSearch, setSourceCustomerSearch] = useState("");
   const [destinationCustomerSearch, setDestinationCustomerSearch] =
@@ -66,6 +68,7 @@ function CreateTransactionPresentation({
 
   return (
     <ProForm
+      grid
       submitter={{
         searchConfig: {
           submitText: "Guardar",
@@ -76,6 +79,7 @@ function CreateTransactionPresentation({
     >
       <ProFormGroup>
         <ProFormSelect
+          colProps={{ span: 4 }}
           name="type"
           onChange={() => {
             form.resetFields([
@@ -102,6 +106,7 @@ function CreateTransactionPresentation({
       </ProFormGroup>
       <ProFormGroup title="Cuenta Origen">
         <ProFormSelect
+          colProps={{ span: 5 }}
           showSearch
           disabled={!type}
           placeholder="Selecciona un cliente"
@@ -128,6 +133,7 @@ function CreateTransactionPresentation({
           width="md"
         />
         <ProFormSelect
+          colProps={{ span: 5 }}
           placeholder="Selecciona una cuenta"
           label="Cuenta"
           request={async (params) => {
@@ -156,8 +162,11 @@ function CreateTransactionPresentation({
           disabled={!customerId}
           dependencies={["customerId"]}
         />
-        <ProFormDigit
+        <ProFormMoney
+          customSymbol="MXN"
+          min={1}
           name="amount"
+          colProps={{ span: 5 }}
           rules={
             +type === TransactionTypes.OUTGOING_TRANSFER ||
             +type === TransactionTypes.WITHDRAWAL
@@ -167,6 +176,7 @@ function CreateTransactionPresentation({
                     max: selectedSourceAccount,
                     message: "No puede ser mayor al saldo de la cuenta",
                   },
+                  { required: true, message: "Este campo es requerido" },
                 ]
               : undefined
           }
@@ -174,10 +184,12 @@ function CreateTransactionPresentation({
           disabled={!sourceAccountId}
           fieldProps={{ min: 0 }}
         />
-        <ProFormTextArea
+        <ProFormText
+          colProps={{ span: 7 }}
           required
           rules={[{ required: true }]}
           disabled={!sourceAccountId}
+          placeholder="Ejemplo: Pago de nómina"
           name="description"
           label="Descripción"
         />
@@ -185,8 +197,9 @@ function CreateTransactionPresentation({
       {+type === TransactionTypes.OUTGOING_TRANSFER && (
         <ProFormGroup title="Cuenta Destino">
           <ProFormSelect
+            colProps={{ span: 5 }}
             showSearch
-            disabled={!type || !amount}
+            disabled={!type || !amount || !description}
             placeholder="Selecciona un cliente"
             label="Cliente"
             request={async (params) => {
@@ -211,6 +224,7 @@ function CreateTransactionPresentation({
             width="md"
           />
           <ProFormSelect
+            colProps={{ span: 5 }}
             placeholder="Selecciona una cuenta"
             label="Cuenta"
             request={async (params) => {
