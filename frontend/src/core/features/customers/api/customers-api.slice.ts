@@ -15,7 +15,7 @@ const baseApiChild = baseApi.enhanceEndpoints({
 export const customersApi = baseApiChild.injectEndpoints({
   endpoints: (builder) => ({
     getCustomers: builder.query<
-      Paginated<Customer>,  
+      Paginated<Customer>,
       CustomerParams & PaginatedParams
     >({
       query: ({ pageNumber, pageSize, ...filters }) => {
@@ -72,6 +72,8 @@ export const customersApi = baseApiChild.injectEndpoints({
 
 export const {
   useGetCustomersQuery,
+  useLazyGetCustomersQuery,
+  useLazyGetCustomerAccountsQuery,
   useGetCustomerByIdQuery,
   useCreateCustomerMutation,
   useGetCustomerAccountsQuery,

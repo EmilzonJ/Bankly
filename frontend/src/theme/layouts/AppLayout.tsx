@@ -26,8 +26,8 @@ const defaultMenus: MenuDataItem[] = [
       {
         path: 'new',
         name: 'Nueva Transacción',
-      }
-    ]
+      },
+    ],
   },
 ];
 

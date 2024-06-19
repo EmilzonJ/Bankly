@@ -7,6 +7,7 @@ import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import DashboardPage from '@/pages/Page';
 import TransactionListPage from '@/pages/transactions/list/Page';
 import TransactionDetailPage from '@/pages/transactions/detail/Page';
+import TransactionNewPage from '@/pages/transactions/new/Page';
 
 export enum Routes {
   LIST_RELATIVE_PATH = 'list',
@@ -22,6 +23,7 @@ export enum Routes {
   ACCOUNT_DETAIL_RELATIVE_PATH = ':accountId',
 
   TRANSACTIONS_INDEX = '/transactions',
+  TRANSACTIONS__NEW = '/transactions/new',
   TRANSACTION_LIST_PAGE = `/transactions/${Routes.LIST_RELATIVE_PATH}`,
   TRANSACTION_DETAIL_PAGE = '/transactions/:transactionId',
   TRANSACTION_DETAIL_RELATIVE_PATH = ':transactionId',
@@ -84,6 +86,10 @@ export const router = createBrowserRouter([
           {
             path: Routes.TRANSACTION_DETAIL_PAGE,
             element: <TransactionDetailPage />,
+          },
+          {
+            path: Routes.TRANSACTIONS__NEW,
+            element: <TransactionNewPage />,
           },
           {
             path: '',
