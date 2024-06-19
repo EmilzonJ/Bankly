@@ -2,6 +2,7 @@ using Application.Caching;
 using Domain.Collections;
 using Domain.Contracts;
 using Domain.Enums;
+using Infrastructure.Caching;
 using MongoDB.Bson;
 
 namespace Infrastructure.Repositories;
@@ -11,7 +12,7 @@ public class TransactionRepositoryCached(
     ICacheService cacheService
 ) : ITransactionRepository
 {
-    private const string CacheKeyPrefix = "Transaction_";
+    private const string CacheKeyPrefix = CacheKeyPrefixes.Transaction;
 
     public async Task<Transaction?> GetByIdAsync(ObjectId id)
     {
@@ -43,18 +44,6 @@ public class TransactionRepositoryCached(
         ) ?? [];
     }
 
-    public async Task AddAsync(Transaction transaction)
-    {
-        await decorated.AddAsync(transaction);
-        await cacheService.RemoveByPrefixAsync(CacheKeyPrefix);
-    }
-
-    public async Task UpdateAsync(Transaction transaction)
-    {
-        await decorated.UpdateAsync(transaction);
-        await cacheService.RemoveByPrefixAsync(CacheKeyPrefix);
-    }
-
     public async Task DeleteAsync(ObjectId id)
     {
         await decorated.DeleteAsync(id);
@@ -66,8 +55,7 @@ public class TransactionRepositoryCached(
         string? reference,
         string? description,
         DateOnly? createdAt
-    )
-        => await decorated.CountAsync(type, reference, description, createdAt);
+    ) => await decorated.CountAsync(type, reference, description, createdAt);
 
     public async Task<IEnumerable<Transaction>> GetPagedAsync(
         int pageNumber,

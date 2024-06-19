@@ -29,16 +29,6 @@ public class TransactionRepository(MongoDbContext context) : ITransactionReposit
             .SortByDescending(t => t.CreatedAt)
             .ToListAsync();
 
-    public async Task AddAsync(Transaction transaction)
-    {
-        await _transactions.InsertOneAsync(transaction);
-    }
-
-    public async Task UpdateAsync(Transaction transaction)
-    {
-        await _transactions.ReplaceOneAsync(t => t.Id == transaction.Id, transaction);
-    }
-
     public async Task DeleteAsync(ObjectId id)
     {
         await _transactions.DeleteOneAsync(t => t.Id == id);

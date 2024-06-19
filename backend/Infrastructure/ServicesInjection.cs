@@ -1,6 +1,5 @@
 using System.Reflection;
 using Application.Caching;
-using Application.Features.Customers.Events;
 using Domain.Contracts;
 using Infrastructure.Caching;
 using Infrastructure.Consumers;

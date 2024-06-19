@@ -11,6 +11,9 @@
       - "4000:4000"
     depends_on:
       - bankly-db
+      - bankly-db-dashboard
+      - bankly-cache
+      - bankly-mq
     networks:
       - bankly-network
   bankly-cache:

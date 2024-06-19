@@ -15,18 +15,19 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
         Converters = new List<JsonConverter> {new ObjectIdConverter()}
     };
 
-    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class
     {
         string? cachedValue = await distributedCache.GetStringAsync(key, cancellationToken);
 
-        if (cachedValue is null) return default;
+        if (cachedValue is null or "[]") return null;
 
-        T? value = JsonConvert.DeserializeObject<T>(cachedValue, JsonSerializerSettings);
+        var value = JsonConvert.DeserializeObject<T>(cachedValue, JsonSerializerSettings);
 
         return value;
     }
 
     public async Task<T?> GetAsync<T>(string key, Func<Task<T>> factory, CancellationToken cancellationToken = default)
+        where T : class
     {
         T? cachedValue = await GetAsync<T>(key, cancellationToken);
 
