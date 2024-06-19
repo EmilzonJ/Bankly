@@ -6,15 +6,15 @@ export enum TransactionTypes {
 }
 
 export enum TransactionTypesLabels {
-  DEPOSIT = "Depósito",
-  WITHDRAWAL = "Retiro",
-  OUTGOING_TRANSFER = "Transferencia saliente",
-  INCOMING_TRANSFER = "Transferencia entrante",
+  DEPOSIT = 'Depósito',
+  WITHDRAWAL = 'Retiro',
+  OUTGOING_TRANSFER = 'Transferencia saliente',
+  INCOMING_TRANSFER = 'Transferencia entrante',
 }
 
 export const transactionTypesColors = {
-  [TransactionTypes.DEPOSIT]: "green",
-  [TransactionTypes.WITHDRAWAL]: "red",
-  [TransactionTypes.OUTGOING_TRANSFER]: "red",
-  [TransactionTypes.INCOMING_TRANSFER]: "green",
+  [TransactionTypes.DEPOSIT]: 'green',
+  [TransactionTypes.WITHDRAWAL]: 'red',
+  [TransactionTypes.OUTGOING_TRANSFER]: 'red',
+  [TransactionTypes.INCOMING_TRANSFER]: 'green',
 };

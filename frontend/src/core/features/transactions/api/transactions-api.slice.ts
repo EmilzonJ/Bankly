@@ -2,7 +2,8 @@ import { baseApi } from '@/core/store/base.api';
 import {
   CreateTransaction,
   Transaction,
-  TransactionParams
+  TransactionParams,
+  TransacttionById,
 } from '@/core/types/transaction.type';
 import { Paginated, PaginatedParams } from '@/core/types/paginated.type';
 
@@ -13,7 +14,7 @@ const baseApiChild = baseApi.enhanceEndpoints({
 export const transactionsApi = baseApiChild.injectEndpoints({
   endpoints: (builder) => ({
     getTransactions: builder.query<
-      Paginated<Transaction>,  
+      Paginated<Transaction>,
       TransactionParams & PaginatedParams
     >({
       query: ({ pageNumber, pageSize, ...filters }) => {
@@ -26,7 +27,7 @@ export const transactionsApi = baseApiChild.injectEndpoints({
       },
       providesTags: [{ type: 'Transaction', id: 'LIST' }],
     }),
-    getTransactionById: builder.query<Transaction, string | undefined>({
+    getTransactionById: builder.query<TransacttionById, string | undefined>({
       query: (id) => `transactions/${id}`,
       providesTags: [{ type: 'Transaction' }],
     }),
@@ -37,12 +38,12 @@ export const transactionsApi = baseApiChild.injectEndpoints({
         body,
       }),
       invalidatesTags: [{ type: 'Transaction', id: 'LIST' }],
-    })
+    }),
   }),
 });
 
 export const {
   useGetTransactionsQuery,
   useGetTransactionByIdQuery,
-  useCreateTransactionMutation
+  useCreateTransactionMutation,
 } = transactionsApi;

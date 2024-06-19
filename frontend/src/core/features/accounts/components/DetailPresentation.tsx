@@ -1,17 +1,25 @@
-import { Transaction } from "@/core/types/transaction.type";
-import { ProDescriptions, ProTable } from "@ant-design/pro-components";
-import { Account } from "@/core/types/account.type";
-import { accountTypesMap } from "../utils/account-types-map.util";
-import { Badge } from "antd";
-import { TransactionTypes, transactionTypesColors } from "@/core/enums/transaction-types.enum";
-import { transactionTypesMap } from "../utils/transaction-types-map.util";
-import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import {
+  TransactionTypes,
+  transactionTypesColors,
+} from '@/core/enums/transaction-types.enum';
+import { Account } from '@/core/types/account.type';
+import { Transaction } from '@/core/types/transaction.type';
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  EyeOutlined,
+} from '@ant-design/icons';
+import { ProDescriptions, ProTable } from '@ant-design/pro-components';
+import { Badge } from 'antd';
+import { accountTypesMap } from '../utils/account-types-map.util';
+import { transactionTypesMap } from '../utils/transaction-types-map.util';
 
 type DetailPresentationProps = {
   data?: Account;
   accountTransactions?: Transaction[];
   loadingTransactions: boolean;
   reloadAccounts: () => void;
+  onSeeTransaction: (id: string) => void;
 };
 
 function AccountDetailPresentation({
@@ -19,6 +27,7 @@ function AccountDetailPresentation({
   accountTransactions,
   loadingTransactions,
   reloadAccounts,
+  onSeeTransaction,
 }: DetailPresentationProps) {
   return (
     <>
@@ -27,50 +36,50 @@ function AccountDetailPresentation({
         dataSource={data}
         columns={[
           {
-            title: "Identificador",
-            dataIndex: "id",
-            valueType: "text",
+            title: 'Identificador',
+            dataIndex: 'id',
+            valueType: 'text',
           },
           {
-            title: "Alias",
-            dataIndex: "alias",
-            valueType: "text",
+            title: 'Alias',
+            dataIndex: 'alias',
+            valueType: 'text',
           },
           {
-            title: "Cliente",
-            dataIndex: "customerName",
-            valueType: "text",
+            title: 'Cliente',
+            dataIndex: 'customerName',
+            valueType: 'text',
           },
           {
-            title: "Saldo",
-            dataIndex: "balance",
+            title: 'Saldo',
+            dataIndex: 'balance',
             fieldProps: {
               precision: 2,
-              customSymbol: "MXN ",
+              customSymbol: 'MXN ',
             },
-            valueType: "money",
+            valueType: 'money',
           },
           {
-            title: "Tipo",
-            dataIndex: "type",
-            valueType: "text",
+            title: 'Tipo',
+            dataIndex: 'type',
+            valueType: 'text',
             renderText: (_text, record) => accountTypesMap(record?.type),
           },
           {
-            title: "Creada en",
-            dataIndex: "createdAt",
-            valueType: "date",
+            title: 'Creada en',
+            dataIndex: 'createdAt',
+            valueType: 'date',
           },
           {
-            title: "Actualizada en",
-            dataIndex: "updatedAt",
-            valueType: "date",
+            title: 'Actualizada en',
+            dataIndex: 'updatedAt',
+            valueType: 'date',
           },
         ]}
       />
       <ProTable<Partial<Transaction>>
-        headerTitle="Transacciones de la cuenta"
-        rowKey="id"
+        headerTitle='Transacciones de la cuenta'
+        rowKey='id'
         loading={loadingTransactions}
         dataSource={accountTransactions}
         search={false}
@@ -80,21 +89,21 @@ function AccountDetailPresentation({
         }}
         columns={[
           {
-            title: "Referencia",
-            dataIndex: "id",
+            title: 'Referencia',
+            dataIndex: 'id',
             editable: false,
             width: 300,
           },
           {
-            title: "Descripción",
-            dataIndex: "description",
+            title: 'Descripción',
+            dataIndex: 'description',
             hideInSearch: true,
             editable: false,
             width: 300,
           },
           {
-            title: "Monto de la transacción",
-            dataIndex: "amount",
+            title: 'Monto de la transacción',
+            dataIndex: 'amount',
             width: 300,
             render: (_, entity) => {
               if (entity.type === undefined) {
@@ -106,14 +115,14 @@ function AccountDetailPresentation({
                 entity.type === TransactionTypes.INCOMING_TRANSFER;
 
               return (
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {isDepositOrIncoming ? (
                     <ArrowUpOutlined
-                      style={{ color: "green", marginRight: 8 }}
+                      style={{ color: 'green', marginRight: 8 }}
                     />
                   ) : (
                     <ArrowDownOutlined
-                      style={{ color: "red", marginRight: 8 }}
+                      style={{ color: 'red', marginRight: 8 }}
                     />
                   )}
                   <span>{`MXN ${entity.amount}`}</span>
@@ -123,8 +132,8 @@ function AccountDetailPresentation({
           },
           {
             editable: false,
-            title: "Tipo",
-            dataIndex: "type",
+            title: 'Tipo',
+            dataIndex: 'type',
             render: (_, entity) => {
               if (entity.type === undefined) {
                 return null;
@@ -139,10 +148,16 @@ function AccountDetailPresentation({
           },
           {
             editable: false,
-            title: "Creada en",
-            dataIndex: "createdAt",
-            valueType: "date",
-          }
+            title: 'Creada en',
+            dataIndex: 'createdAt',
+            valueType: 'date',
+          },
+          {
+            title: 'Detalle',
+            render: (_, record) => (
+              <EyeOutlined onClick={() => onSeeTransaction(record.id)} />
+            ),
+          },
         ]}
       />
     </>
