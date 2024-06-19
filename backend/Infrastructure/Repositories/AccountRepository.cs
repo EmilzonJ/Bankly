@@ -71,21 +71,22 @@ public class AccountRepository(
                              a.Alias.Equals(alias, StringComparison.CurrentCultureIgnoreCase)
                     ))).AnyAsync();
 
-    public async Task<int> CountAsync(string? alias, string? customerName, DateOnly? createdAt)
+    public async Task<int> CountAsync(ObjectId? identifier, string? alias, string? customerName, DateOnly? createdAt)
     {
-        var filter = CreateFilter(alias, customerName, createdAt);
+        var filter = CreateFilter(identifier, alias, customerName, createdAt);
         return (int) await _accounts.CountDocumentsAsync(CreateActiveFilter(filter));
     }
 
     public async Task<IEnumerable<Account>> GetPagedAsync(
         int pageNumber,
         int pageSize,
+        ObjectId? identifier,
         string? alias,
         string? customerName,
         DateOnly? createdAt
     )
     {
-        var filter = CreateFilter(alias, customerName, createdAt);
+        var filter = CreateFilter(identifier, alias, customerName, createdAt);
 
         return await _accounts.Find(filter)
             .SortByDescending(a => a.CreatedAt)
@@ -120,10 +121,13 @@ public class AccountRepository(
         return filter;
     }
 
-    private static FilterDefinition<Account> CreateFilter(string? alias, string? customerName, DateOnly? createAt)
+    private static FilterDefinition<Account> CreateFilter(ObjectId? identifier, string? alias, string? customerName, DateOnly? createAt)
     {
         var builder = Builders<Account>.Filter;
         var filter = CreateActiveFilter(builder.Empty);
+
+        if (identifier is not null)
+            filter &= builder.Eq(c => c.Id, identifier);
 
         if (!string.IsNullOrWhiteSpace(alias))
         {

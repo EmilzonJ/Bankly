@@ -15,6 +15,7 @@ import { ItemType } from "antd/es/menu/interface";
 import { accountTypesMap } from "../utils/account-types-map.util";
 
 export type FilterState = {
+  identifier?: string;
   alias?: string;
   customerName?: string;
   createdAt?: string;
@@ -77,9 +78,10 @@ function AccountListPresentation({
       }}
       onSubmit={(values) => {
         setFilters({
+          identifier: values.id ?? "",
           alias: values.alias ?? "",
           createdAt: values.createdAt ?? "",
-          customerName: values.customerName ?? "",
+          customerName: values.customerName ?? ""
         });
 
         setPagination({
@@ -93,7 +95,6 @@ function AccountListPresentation({
           title: "Identificador",
           dataIndex: "id",
           valueType: "text",
-          hideInSearch: true,
           filters: true,
         },
         {
@@ -139,13 +140,14 @@ function AccountListPresentation({
           title: "Actualizada en",
           dataIndex: "updatedAt",
           valueType: "date",
+          width: 200,
           hideInSearch: true,
         },
         {
           title: "Acciones",
           dataIndex: "option",
           valueType: "option",
-          width: 200,
+          width: 150,
           render: (_, entity, _2, action) => (
             <Dropdown
               menu={{

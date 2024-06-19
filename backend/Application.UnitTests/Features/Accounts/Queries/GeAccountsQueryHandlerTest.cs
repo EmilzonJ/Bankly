@@ -30,10 +30,10 @@ namespace Application.UnitTests.Features.Accounts.Queries
                 }
             ];
 
-            _accountRepository.GetPagedAsync(1, 10, null, null, null).Returns(accounts);
-            _accountRepository.CountAsync(null, null, null).Returns(2);
+            _accountRepository.GetPagedAsync(1, 10, null, null, null, null).Returns(accounts);
+            _accountRepository.CountAsync(null, null, null, null).Returns(2);
 
-            var query = new GetAccountsQuery(1, 10);
+            var query = new GetAccountsQuery(1, 10, null);
             var handler = new GetAccountsQueryHandler(_accountRepository);
 
             // Act
@@ -42,11 +42,11 @@ namespace Application.UnitTests.Features.Accounts.Queries
             // Assert
             await _accountRepository
                 .Received(1)
-                .GetPagedAsync(1, 10, null, null, null);
+                .GetPagedAsync(1, 10, null, null, null, null);
 
             await _accountRepository
                 .Received(1)
-                .CountAsync(null, null, null);
+                .CountAsync(null, null, null, null);
 
             result.Value.Items.Should().BeEquivalentTo(accounts.Select(x => x.ToResponse()));
             result.Value.Items.Should().HaveCount(2);
@@ -58,10 +58,10 @@ namespace Application.UnitTests.Features.Accounts.Queries
             // Arrange
             var accounts = Array.Empty<AccountWithCustomer>().ToList();
 
-            _accountRepository.GetPagedAsync(1, 10, null, null, null).Returns(accounts);
-            _accountRepository.CountAsync(null, null, null).Returns(0);
+            _accountRepository.GetPagedAsync(1, 10, null, null, null, null).Returns(accounts);
+            _accountRepository.CountAsync(null, null, null, null).Returns(0);
 
-            var query = new GetAccountsQuery(1, 10);
+            var query = new GetAccountsQuery(1, 10, null);
             var handler = new GetAccountsQueryHandler(_accountRepository);
 
             // Act
@@ -70,11 +70,11 @@ namespace Application.UnitTests.Features.Accounts.Queries
             // Assert
             await _accountRepository
                 .Received(1)
-                .GetPagedAsync(1, 10, null, null, null);
+                .GetPagedAsync(1, 10, null, null, null, null);
 
             await _accountRepository
                 .Received(1)
-                .CountAsync(null, null, null);
+                .CountAsync(null, null, null, null);
 
             result.Value.Items.Should().BeEquivalentTo(accounts.Select(x => x.ToResponse()));
             result.Value.Items.Should().HaveCount(0);
@@ -97,10 +97,10 @@ namespace Application.UnitTests.Features.Accounts.Queries
                 }
             ];
 
-            _accountRepository.GetPagedAsync(1, 10, "Account 1", null, null).Returns(accounts);
-            _accountRepository.CountAsync("Account 1", null, null).Returns(1);
+            _accountRepository.GetPagedAsync(1, 10,null, "Account 1", null, null).Returns(accounts);
+            _accountRepository.CountAsync(null, "Account 1", null, null).Returns(1);
 
-            var query = new GetAccountsQuery(1, 10, "Account 1");
+            var query = new GetAccountsQuery(1, 10, null, "Account 1");
             var handler = new GetAccountsQueryHandler(_accountRepository);
 
             // Act
@@ -109,11 +109,11 @@ namespace Application.UnitTests.Features.Accounts.Queries
             // Assert
             await _accountRepository
                 .Received(1)
-                .GetPagedAsync(1, 10, "Account 1", null, null);
+                .GetPagedAsync(1, 10, null, "Account 1", null, null);
 
             await _accountRepository
                 .Received(1)
-                .CountAsync("Account 1", null, null);
+                .CountAsync(null,"Account 1", null, null);
 
             result.Value.Items.Should().BeEquivalentTo(accounts.Select(x => x.ToResponse()));
             result.Value.Items.Should().HaveCount(1);

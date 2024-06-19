@@ -13,11 +13,12 @@ public record GetAccountsQueryHandler(
     public async ValueTask<Result<PaginatedList<AccountResponse>>> Handle(GetAccountsQuery query,
         CancellationToken cancellationToken)
     {
-        var totalAccounts = await AccountRepository.CountAsync(query.Alias, query.CustomerName, query.CreatedAt);
+        var totalAccounts = await AccountRepository.CountAsync(query.Identifier, query.Alias, query.CustomerName, query.CreatedAt);
         IEnumerable<Account> accounts = await AccountRepository
             .GetPagedAsync(
                 query.PageNumber,
                 query.PageSize,
+                query.Identifier,
                 query.Alias,
                 query.CustomerName,
                 query.CreatedAt

@@ -15,6 +15,7 @@ public interface IAccountRepository
     Task<bool> SameAliasExistsAsync(ObjectId customerId, string alias);
 
     Task<int> CountAsync(
+        ObjectId? identifier,
         string? alias,
         string? customerName,
         DateOnly? createdAt
@@ -23,6 +24,7 @@ public interface IAccountRepository
     Task<IEnumerable<Account>> GetPagedAsync(
         int pageNumber,
         int pageSize,
+        ObjectId? identifier,
         string? alias,
         string? customerName,
         DateOnly? createdAt

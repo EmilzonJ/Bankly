@@ -49,35 +49,16 @@ public class CustomerWriteRepository(
                 accountUpdates.Add(new UpdateOneModel<Account>(accountFilter, accountUpdate));
 
                 var transactionFilter = Builders<Transaction>.Filter.Where(t =>
-                    (t.SourceAccountId == account.Id ||
-                     t.DestinationAccountId == account.Id) &&
+                    t.SourceAccountId == account.Id &&
                     t.IsActive
                 );
 
                 var transactions = await _transactions.Find(transactionFilter).ToListAsync();
 
-                foreach (var transaction in transactions)
-                {
-                    var sourceAccountActive = await _accounts
-                        .Find(a => a.Id == transaction.SourceAccountId && a.IsActive)
-                        .AnyAsync();
-
-                    var destinationAccountActive = transaction.DestinationAccountId.HasValue &&
-                                                   await _accounts
-                                                       .Find(a =>
-                                                           a.Id == transaction.DestinationAccountId &&
-                                                           a.IsActive
-                                                       ).AnyAsync();
-
-                    if (sourceAccountActive ||
-                        (transaction.DestinationAccountId.HasValue && destinationAccountActive)) continue;
-
-                    var transactionUpdate = Builders<Transaction>.Update.Set(t => t.IsActive, false);
-
-                    transactionUpdates.Add(new UpdateOneModel<Transaction>(
-                        Builders<Transaction>.Filter.Eq(t => t.Id, transaction.Id), transactionUpdate)
-                    );
-                }
+                transactionUpdates.AddRange(
+                    from transaction in transactions let transactionUpdate = Builders<Transaction>.Update.Set(t => t.IsActive, false)
+                    select new UpdateOneModel<Transaction>(Builders<Transaction>.Filter.Eq(t => t.Id, transaction.Id), transactionUpdate)
+                );
             }
 
             // Execute bulk update accounts

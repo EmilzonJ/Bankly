@@ -15,11 +15,17 @@ public class AccountsController(ISender sender) : BaseController
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedList<AccountResponse>))]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IResult> GetAsync([FromQuery] GetAccountsFilter filters)
     {
+        var idParsed = filters.Identifier.ToNullableObjectId();
+        if (!idParsed.IsSuccess) return idParsed.ToProblemDetails();
+
         var query = new GetAccountsQuery(
             filters.PageNumber,
             filters.PageSize,
+            idParsed.Value,
             filters.Alias,
             filters.CustomerName,
             filters.CreatedAt

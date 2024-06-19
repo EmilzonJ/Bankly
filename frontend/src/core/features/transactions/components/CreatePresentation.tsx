@@ -1,15 +1,17 @@
-import { TransactionTypes } from '@/core/enums/transaction-types.enum';
-import { Account } from '@/core/types/account.type';
-import { Customer } from '@/core/types/customer.type';
+import { TransactionTypes } from "@/core/enums/transaction-types.enum";
+import { Account } from "@/core/types/account.type";
+import { Customer } from "@/core/types/customer.type";
+import { CreateTransaction } from "@/core/types/transaction.type";
 import {
   ProForm,
   ProFormDigit,
   ProFormGroup,
   ProFormSelect,
-} from '@ant-design/pro-components';
-import { useForm, useWatch } from 'antd/es/form/Form';
-import { FormInstance } from 'antd/lib';
-import { useState } from 'react';
+  ProFormTextArea,
+} from "@ant-design/pro-components";
+import { useForm, useWatch } from "antd/es/form/Form";
+import { FormInstance } from "antd/lib";
+import { useState } from "react";
 
 export type FilterState = {
   type?: string;
@@ -24,7 +26,7 @@ export type LocalPagination = {
 
 type ListPresentationProps = {
   isLoading: boolean;
-  onSubmit: () => void;
+  onSubmit: (values: CreateTransaction) => void;
   customerMeta: {
     handleGetCustomers: (name: string) => Promise<Customer[]>;
     loading: boolean;
@@ -32,205 +34,206 @@ type ListPresentationProps = {
   handleGetAccounts: (customerId: string) => Promise<Account[]>;
 };
 
-const useOnChangeFielParent = (form: FormInstance) => {
-  const type = useWatch('type', form);
-  const customerId = useWatch('customerId', form);
-  const accountId = useWatch('accountId', form);
-  const amount = useWatch('amount', form);
-
-  const customerToId = useWatch('customerToId', form);
-  const accounTotId = useWatch('accounTotId', form);
+const useOnChangeFieldParent = (form: FormInstance) => {
+  const type = useWatch("type", form);
+  const customerId = useWatch("customerId", form);
+  const sourceAccountId = useWatch("sourceAccountId", form);
+  const amount = useWatch("amount", form);
+  const customerToId = useWatch("customerToId", form);
 
   return {
     type,
     customerId,
-    accountId,
+    sourceAccountId,
     amount,
     customerToId,
-    accounTotId,
   };
 };
 
 function CreateTransactionPresentation({
   customerMeta: { handleGetCustomers, loading },
   handleGetAccounts,
+  onSubmit,
 }: ListPresentationProps) {
   const [form] = useForm();
 
-  const { type, customerId, accountId, amount, customerToId, accounTotId } =
-    useOnChangeFielParent(form);
-  const [search, setSearch] = useState('');
-  const [search2, setSearch2] = useState('');
-  const [SelectedAccount1, setSelectedAccount1] = useState(0);
-  // const signByType = () => {
-  //   return {
-  //     [TransactionTypes.DEPOSIT]: {
-  //       sign: '+',
-  //     },
-  //     [TransactionTypes.WITHDRAWAL]: {
-  //       sign: '-',
-  //     },
-  //   };
-  // };
+  const { type, customerId, sourceAccountId, amount, customerToId } =
+    useOnChangeFieldParent(form);
+  const [souceCustomerSearch, setSourceCustomerSearch] = useState("");
+  const [destinationCustomerSearch, setDestinationCustomerSearch] =
+    useState("");
+  const [selectedSourceAccount, setSelectedSourceAccount] = useState(0);
 
   return (
     <ProForm
-      form={form}
-      onFinish={(data) => {
-        console.log(data);
+      submitter={{
+        searchConfig: {
+          submitText: "Guardar",
+        },
       }}
+      form={form}
+      onFinish={onSubmit}
     >
       <ProFormGroup>
         <ProFormSelect
-          name='type'
+          name="type"
           onChange={() => {
             form.resetFields([
-              'customerId',
-              'accountId',
-              'amount',
-              'customerToId',
-              'accounTotId',
+              "customerId",
+              "sourceAccountId",
+              "amount",
+              "customerToId",
+              "destinationAccountId",
             ]);
           }}
-          label='Tipo de transacción'
+          label="Tipo de transacción"
           valueEnum={{
             [TransactionTypes.DEPOSIT]: {
-              text: 'Depósito',
+              text: "Depósito",
             },
             [TransactionTypes.WITHDRAWAL]: {
-              text: 'Retiro',
+              text: "Retiro",
             },
-            [TransactionTypes.INCOMING_TRANSFER]: {
-              text: 'Transferencia',
+            [TransactionTypes.OUTGOING_TRANSFER]: {
+              text: "Transferencia",
             },
           }}
         />
       </ProFormGroup>
-      <ProFormGroup title='Cuenta 1'>
+      <ProFormGroup title="Cuenta Origen">
         <ProFormSelect
           showSearch
           disabled={!type}
-          placeholder='Selecciona un cliente'
-          label='Cliente'
+          placeholder="Selecciona un cliente"
+          label="Cliente"
           request={async (params) => {
             const res = await handleGetCustomers(params.text);
             return res?.map((c) => ({ label: c.name, value: c.id }));
           }}
-          name='customerId'
+          name="customerId"
           debounceTime={500}
-          params={{ text: search }}
+          params={{ text: souceCustomerSearch }}
           fieldProps={{
             allowClear: true,
-            width: '100%',
+            width: "100%",
             loading: loading,
-            searchValue: search,
+            searchValue: souceCustomerSearch,
             onSearch: async (e) => {
-              setSearch(e);
+              setSourceCustomerSearch(e);
             },
             onChange: () => {
-              form.resetFields(['amount', 'accountId']);
+              form.resetFields(["amount", "sourceAccountId"]);
             },
           }}
-          width='md'
+          width="md"
         />
         <ProFormSelect
-          placeholder='Selecciona una cuenta'
-          label='Cuenta'
+          placeholder="Selecciona una cuenta"
+          label="Cuenta"
           request={async (params) => {
             if (!params.text) return [];
             const res = await handleGetAccounts(params.text);
             return res?.map((c) => ({
-              label: `(${c.balance}) ${c.alias}`,
+              label: `(MXN ${c.balance}) ${c.alias}`,
               value: c.id,
               balance: c.balance,
             }));
           }}
-          name='accountId'
+          name="sourceAccountId"
           debounceTime={500}
           params={{ text: customerId }}
           fieldProps={{
-            width: '100%',
+            width: "100%",
             loading: loading,
             onChange: () => {
-              form.resetFields(['amount']);
+              form.resetFields(["amount"]);
             },
             onSelect: (_, opt) => {
-              setSelectedAccount1(opt.balance);
+              setSelectedSourceAccount(opt.balance);
             },
           }}
-          width='md'
+          width="md"
           disabled={!customerId}
-          dependencies={['customerId']}
+          dependencies={["customerId"]}
         />
         <ProFormDigit
-          name='amount'
-          rules={[
-            {
-              type: 'number',
-              max: SelectedAccount1,
-            },
-          ]}
-          label='Monto'
-          disabled={!accountId}
+          name="amount"
+          rules={
+            +type === TransactionTypes.OUTGOING_TRANSFER ||
+            +type === TransactionTypes.WITHDRAWAL
+              ? [
+                  {
+                    type: "number",
+                    max: selectedSourceAccount,
+                    message: "No puede ser mayor al saldo de la cuenta",
+                  },
+                ]
+              : undefined
+          }
+          label="Monto"
+          disabled={!sourceAccountId}
           fieldProps={{ min: 0 }}
         />
+        <ProFormTextArea
+          required
+          rules={[{ required: true }]}
+          disabled={!sourceAccountId}
+          name="description"
+          label="Descripción"
+        />
       </ProFormGroup>
-      {+type === TransactionTypes.INCOMING_TRANSFER && (
-        <ProFormGroup title='Cuenta 2'>
+      {+type === TransactionTypes.OUTGOING_TRANSFER && (
+        <ProFormGroup title="Cuenta Destino">
           <ProFormSelect
             showSearch
             disabled={!type || !amount}
-            placeholder='Selecciona un cliente'
-            label='Cliente'
+            placeholder="Selecciona un cliente"
+            label="Cliente"
             request={async (params) => {
               const res = await handleGetCustomers(params.text);
               return res?.map((c) => ({ label: c.name, value: c.id }));
             }}
-            name='customerToId'
+            name="customerToId"
             debounceTime={500}
-            params={{ text: search }}
+            params={{ text: destinationCustomerSearch }}
             fieldProps={{
               allowClear: true,
-              width: '100%',
+              width: "100%",
               loading: loading,
-              searchValue: search2,
+              searchValue: destinationCustomerSearch,
               onSearch: async (e) => {
-                setSearch2(e);
+                setDestinationCustomerSearch(e);
+              },
+              onChange: () => {
+                form.resetFields(["destinationAccountId"]);
               },
             }}
-            width='md'
+            width="md"
           />
           <ProFormSelect
-            placeholder='Selecciona una cuenta'
-            label='Cuenta'
+            placeholder="Selecciona una cuenta"
+            label="Cuenta"
             request={async (params) => {
               if (!params.text) return [];
               const res = await handleGetAccounts(params.text);
-              return res?.map((c) => ({
-                label: c.alias,
-                value: c.id,
-                balance: c.balance,
-              }));
+              return res
+                ?.filter((c) => c.id !== sourceAccountId)
+                .map((c) => ({
+                  label: c.alias,
+                  value: c.id,
+                  balance: c.balance,
+                }));
             }}
-            name='accounTotId'
+            name="destinationAccountId"
             debounceTime={500}
             params={{ text: customerToId }}
             fieldProps={{
-              width: '100%',
+              width: "100%",
               loading: loading,
-              onSelect: (_v, opt) => {
-                console.log(opt);
-              },
             }}
-            width='md'
+            width="md"
             disabled={!customerToId}
-            dependencies={['customerToId']}
-          />
-          <ProFormDigit
-            name='amountTo'
-            label='Monto'
-            disabled={!accounTotId}
-            fieldProps={{ min: 0 }}
+            dependencies={["customerToId"]}
           />
         </ProFormGroup>
       )}
