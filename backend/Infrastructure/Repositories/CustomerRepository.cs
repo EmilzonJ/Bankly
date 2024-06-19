@@ -35,7 +35,7 @@ public class CustomerRepository : ICustomerRepository
         => await _customers.Find(CreateActiveFilter(Builders<Customer>.Filter.Eq(c => c.Email, email))).AnyAsync();
 
     public async Task<IEnumerable<Customer>> GetAllAsync()
-        => await _customers.Find(CreateActiveFilter()).ToListAsync();
+        => await _customers.Find(CreateActiveFilter()).SortByDescending(c => c.CreatedAt).ToListAsync();
 
     public async Task AddAsync(Customer customer)
         => await _customers.InsertOneAsync(customer);

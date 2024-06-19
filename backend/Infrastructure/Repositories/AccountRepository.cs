@@ -20,10 +20,15 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
         => await _accounts.Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.Id, id))).AnyAsync();
 
     public async Task<IEnumerable<Account>> GetAllAsync()
-        => await _accounts.Find(CreateActiveFilter()).ToListAsync();
+        => await _accounts
+            .Find(CreateActiveFilter())
+            .SortByDescending(a => a.CreatedAt)
+            .ToListAsync();
 
     public async Task<IEnumerable<Account>> GetAllByCustomerAsync(ObjectId customerId)
-        => await _accounts.Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.CustomerId, customerId)))
+        => await _accounts
+            .Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.CustomerId, customerId)))
+            .SortByDescending(a => a.CreatedAt)
             .ToListAsync();
 
     public async Task AddAsync(Account account)

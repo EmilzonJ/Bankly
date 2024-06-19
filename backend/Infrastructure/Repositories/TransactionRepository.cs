@@ -23,6 +23,7 @@ public class TransactionRepository(MongoDbContext context) : ITransactionReposit
     public async Task<IEnumerable<Transaction>> GetAllByAccountAsync(ObjectId accountId)
         => await _transactions
             .Find(t => t.SourceAccountId == accountId || t.DestinationAccountId == accountId)
+            .SortByDescending(t => t.CreatedAt)
             .ToListAsync();
 
     public async Task AddAsync(Transaction transaction)
