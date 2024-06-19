@@ -1,15 +1,15 @@
-import { CreateAccount } from '@/core/data/accounts.type';
+import { CreateAccount } from '@/core/types/account.type';
 
 import {
   useCreateAccountMutation,
   useGetCustomerAccountsQuery,
   useGetCustomerByIdQuery,
 } from '@/core/features/customers/api/customers-api.slice';
-import DetailPresentation from '@/core/features/customers/components/DetailPresentation';
+import CustomerDetailPresentation from '@/core/features/customers/components/DetailPresentation';
 import { PageContainer } from '@ant-design/pro-components';
 import { useParams } from 'react-router-dom';
 
-function Page() {
+function CustomerDetailPage() {
   const { customerId } = useParams<{ customerId: string }>();
   const { data: customer } = useGetCustomerByIdQuery(customerId, {
     skip: !customerId,
@@ -39,7 +39,7 @@ function Page() {
 
   return (
     <PageContainer title={customer?.name}>
-      <DetailPresentation
+      <CustomerDetailPresentation
         onCreateAccount={handleCreateAccount}
         data={customer}
         customerAccounts={accounts}
@@ -50,4 +50,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default CustomerDetailPage;

@@ -1,11 +1,11 @@
-import { Account, CreateAccount } from '@/core/data/accounts.type';
+import { Account, CreateAccount } from '@/core/types/account.type';
 import {
   CreateCustomer,
   Customer,
   CustomerParams,
   UpdateCustomer,
-} from '@/core/data/customer.type';
-import { Paginated, PaginatedParams } from '@/core/data/paginated.type';
+} from '@/core/types/customer.type';
+import { Paginated, PaginatedParams } from '@/core/types/paginated.type';
 import { baseApi } from '@/core/store/base.api';
 
 const baseApiChild = baseApi.enhanceEndpoints({
@@ -58,14 +58,14 @@ export const customersApi = baseApiChild.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: [{ type: 'Customer' }],
+      invalidatesTags: [{ type: 'Customer' }, 'Account'],
     }),
     deleteCustomer: builder.mutation<void, string>({
       query: (id) => ({
         url: `customers/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: [{ type: 'Customer' }],
+      invalidatesTags: [{ type: 'Customer' }, 'Account'],
     }),
   }),
 });

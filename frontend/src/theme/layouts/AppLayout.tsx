@@ -1,4 +1,4 @@
-import { BankOutlined, UserOutlined } from '@ant-design/icons';
+import { BankOutlined, BookOutlined, UserOutlined } from '@ant-design/icons';
 import { MenuDataItem, ProLayout } from '@ant-design/pro-components';
 import { PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,26 @@ const defaultMenus: MenuDataItem[] = [
     path: 'customers/list',
     name: 'Clientes',
     icon: <UserOutlined />,
+  },
+  {
+    path: 'accounts/list',
+    name: 'Cuentas',
+    icon: <BookOutlined />,
+  },
+  {
+    path: 'transactions',
+    name: 'Transacciones',
+    icon: <BankOutlined />,
+    children: [
+      {
+        path: 'list',
+        name: 'Todas las Transacciones',
+      },
+      {
+        path: 'new',
+        name: 'Nueva Transacción',
+      }
+    ]
   },
 ];
 

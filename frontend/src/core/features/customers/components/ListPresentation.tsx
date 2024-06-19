@@ -2,8 +2,8 @@ import {
   CreateCustomer,
   Customer,
   UpdateCustomer,
-} from '@/core/data/customer.type';
-import { Paginated } from '@/core/data/paginated.type';
+} from '@/core/types/customer.type';
+import { Paginated } from '@/core/types/paginated.type';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -45,7 +45,7 @@ type ListPresentationProps = {
   refetch: () => void;
 };
 
-function ListPresentation({
+function CustomerListPresentation({
   handleCreate,
   handleUpdate,
   isLoading,
@@ -131,6 +131,20 @@ function ListPresentation({
       value={data?.items || []}
       columns={[
         {
+          title: 'Nombre',
+          dataIndex: 'name',
+          filters: true,
+          copyable: true,
+          valueType: 'text',
+          fieldProps: {
+            placeholder: 'Ingrese un nombre',
+          },
+          formItemProps: {
+            label: 'Nombre',
+            rules: [{ type: 'string' }],
+          },
+        },
+        {
           title: 'Correo',
           dataIndex: 'email',
           filters: true,
@@ -144,19 +158,6 @@ function ListPresentation({
           },
         },
         {
-          title: 'Nombre',
-          dataIndex: 'name',
-          filters: true,
-          valueType: 'text',
-          fieldProps: {
-            placeholder: 'Ingrese un nombre',
-          },
-          formItemProps: {
-            label: 'Nombre',
-            rules: [{ type: 'string' }],
-          },
-        },
-        {
           title: 'Fecha de registro',
           dataIndex: 'registeredAt',
           valueType: 'date',
@@ -167,6 +168,7 @@ function ListPresentation({
           title: 'Acciones',
           dataIndex: 'option',
           valueType: 'option',
+          align: 'center',
           width: 200,
           render: (_, entity, _2, action) => (
             <Dropdown
@@ -211,4 +213,4 @@ const items: ItemType[] = [
   },
 ];
 
-export default ListPresentation;
+export default CustomerListPresentation;

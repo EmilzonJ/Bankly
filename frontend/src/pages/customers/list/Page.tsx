@@ -2,14 +2,14 @@ import {
   CreateCustomer,
   Customer,
   UpdateCustomer,
-} from '@/core/data/customer.type';
+} from '@/core/types/customer.type';
 import {
   useCreateCustomerMutation,
   useDeleteCustomerMutation,
   useGetCustomersQuery,
   useUpdateCustomerMutation,
 } from '@/core/features/customers/api/customers-api.slice';
-import ListPresentation, {
+import CustomerListPresentation, {
   FilterState,
   LocalPagination,
 } from '@/core/features/customers/components/ListPresentation';
@@ -19,7 +19,7 @@ import { App } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Page() {
+function CustomerListPage() {
   const [pagination, setPagination] = useState<LocalPagination>({
     current: 1,
     pageSize: 10,
@@ -78,7 +78,7 @@ function Page() {
 
   return (
     <PageContainer>
-      <ListPresentation
+      <CustomerListPresentation
         handleCreate={handleCreate}
         handleUpdate={handleUpdate}
         isLoading={isLoading}
@@ -93,4 +93,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default CustomerListPage;
