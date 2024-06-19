@@ -155,7 +155,12 @@ function AccountDetailPresentation({
           {
             title: 'Detalle',
             render: (_, record) => (
-              <EyeOutlined onClick={() => onSeeTransaction(record.id)} />
+              <EyeOutlined
+                onClick={() => {
+ 
+                  return record.id && onSeeTransaction(record.id);
+                }}
+              />
             ),
           },
         ]}

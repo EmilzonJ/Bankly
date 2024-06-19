@@ -8,6 +8,7 @@ export type Transaction = {
   sourceAccountId: string;
   destinationAccountId: string;
   createdAt: string;
+  id: string;
 };
 
 export type TransacttionById = {
