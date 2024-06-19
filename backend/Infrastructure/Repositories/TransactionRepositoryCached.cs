@@ -1,6 +1,7 @@
 using Application.Caching;
 using Domain.Collections;
 using Domain.Contracts;
+using Domain.Enums;
 using MongoDB.Bson;
 
 namespace Infrastructure.Repositories;
@@ -16,7 +17,7 @@ public class TransactionRepositoryCached(
     {
         string cacheKey = $"{CacheKeyPrefix}{id}";
 
-        return await cacheService.GetAsync<Transaction?>(
+        return await cacheService.GetAsync(
             cacheKey,
             async () => await decorated.GetByIdAsync(id)
         );
@@ -51,14 +52,37 @@ public class TransactionRepositoryCached(
     public async Task UpdateAsync(Transaction transaction)
     {
         await decorated.UpdateAsync(transaction);
-        await cacheService.RemoveAsync($"{CacheKeyPrefix}{transaction.Id}");
         await cacheService.RemoveByPrefixAsync(CacheKeyPrefix);
     }
 
     public async Task DeleteAsync(ObjectId id)
     {
         await decorated.DeleteAsync(id);
-        await cacheService.RemoveAsync($"{CacheKeyPrefix}{id}");
         await cacheService.RemoveByPrefixAsync(CacheKeyPrefix);
+    }
+
+    public async Task<long> CountAsync(
+        TransactionType? type,
+        string? reference,
+        string? description,
+        DateOnly? createdAt
+    )
+        => await decorated.CountAsync(type, reference, description, createdAt);
+
+    public async Task<IEnumerable<Transaction>> GetPagedAsync(
+        int pageNumber,
+        int pageSize,
+        TransactionType? type,
+        string? reference,
+        string? description,
+        DateOnly? createdAt
+    )
+    {
+        string cacheKey = $"{CacheKeyPrefix}Paged_{pageNumber}_{pageSize}_{type}_{reference}_{description}_{createdAt}";
+
+        return await cacheService.GetAsync(
+            cacheKey,
+            async () => await decorated.GetPagedAsync(pageNumber, pageSize, type, reference, description, createdAt)
+        ) ?? [];
     }
 }

@@ -40,10 +40,11 @@ public class CreateCustomerAccountCommandHandlerTest
         var command = new CreateCustomerAccountCommand(customerId, "Alias", invalidBalance);
         var handler = new CreateCustomerAccountCommandHandler(_customerRepository, _accountRepository);
 
-        _customerRepository.ExistsAsync(Arg.Any<ObjectId>()).Returns(true);
+        _customerRepository.GetByIdAsync(Arg.Any<ObjectId>())
+            .Returns(new Customer {Name = "Jhon Doe", Email = "jhon.doe@mail.com"});
 
         // Act
-        Result<string> result = await handler.Handle(command, CancellationToken.None);
+        Result<string> result = await handler.Handle(command, default);
 
         // Assert
         await _accountRepository

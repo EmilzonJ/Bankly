@@ -12,5 +12,4 @@ public class Result<TValue> : Result
         : throw new InvalidOperationException("The value is not available on a failure result.");
 
     public static implicit operator Result<TValue>(TValue? value) => Create(value);
-
 }

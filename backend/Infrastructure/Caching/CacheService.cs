@@ -15,19 +15,18 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
         Converters = new List<JsonConverter> {new ObjectIdConverter()}
     };
 
-    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default) where T : class
+    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
         string? cachedValue = await distributedCache.GetStringAsync(key, cancellationToken);
 
-        if (cachedValue is null) return null;
+        if (cachedValue is null) return default;
 
         T? value = JsonConvert.DeserializeObject<T>(cachedValue, JsonSerializerSettings);
 
         return value;
     }
 
-    public async Task<T> GetAsync<T>(string key, Func<Task<T>> factory, CancellationToken cancellationToken = default)
-        where T : class
+    public async Task<T?> GetAsync<T>(string key, Func<Task<T>> factory, CancellationToken cancellationToken = default)
     {
         T? cachedValue = await GetAsync<T>(key, cancellationToken);
 
@@ -40,7 +39,7 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
         return cachedValue;
     }
 
-    public async Task SetAsync<T>(string key, T value, CancellationToken cancellationToken = default) where T : class
+    public async Task SetAsync<T>(string key, T value, CancellationToken cancellationToken = default)
     {
         string cacheValue = JsonConvert.SerializeObject(value, JsonSerializerSettings);
 

@@ -129,7 +129,8 @@ public class CustomerRepository : ICustomerRepository
     )
     {
         var filter = CreateFilter(name, email, registeredAt);
-        return await _customers.Find(CreateActiveFilter(filter))
+        return await _customers
+            .Find(filter)
             .Skip((pageNumber - 1) * pageSize)
             .Limit(pageSize)
             .ToListAsync();
@@ -157,7 +158,7 @@ public class CustomerRepository : ICustomerRepository
 
         filter &= builder.Gte(c => c.CreatedAt, startOfDay) & builder.Lte(c => c.CreatedAt, endOfDay);
 
-        return filter;
+        return CreateActiveFilter(filter);
     }
 
     private static FilterDefinition<Customer> CreateActiveFilter(FilterDefinition<Customer>? additionalFilter = null)
