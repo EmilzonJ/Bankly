@@ -46,16 +46,16 @@ public class TransferRepository(
 
         var sourceTransaction = GetTransactionInstance(
             TransactionType.OutgoingTransfer,
-            sourceAccount,
-            destinationAccount,
+            sourceAccount: sourceAccount,
+            destinationAccount: destinationAccount,
             amount,
             description
         );
 
         var destinationTransaction = GetTransactionInstance(
             TransactionType.IncomingTransfer,
-            sourceAccount,
-            destinationAccount,
+            sourceAccount: destinationAccount,
+            destinationAccount: sourceAccount,
             amount,
             description
         );

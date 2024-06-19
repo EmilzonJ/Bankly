@@ -1,5 +1,7 @@
 using Application.Features.Customers.CommandHandlers;
 using Application.Features.Customers.Commands;
+using Application.Features.Customers.Events;
+using Application.Messaging;
 using MongoDB.Bson;
 using NSubstitute.ReturnsExtensions;
 
@@ -7,7 +9,9 @@ namespace Application.UnitTests.Features.Customers.Commands;
 
 public class DeleteCustomerCommandHandlerTest
 {
-    private readonly ICustomerRepository _customerRepositoryMock = Substitute.For<ICustomerRepository>();
+    private readonly ICustomerReadRepository _customerReadRepository = Substitute.For<ICustomerReadRepository>();
+    private readonly ICustomerWriteRepository _customerWriteRepository = Substitute.For<ICustomerWriteRepository>();
+    private readonly IMessagePublisher _messagePublisher = Substitute.For<IMessagePublisher>();
 
     [Fact(DisplayName = "Handle_Should_ReturnsResultNotfound_WhenCustomerDoesNotExist")]
     public async Task Handle_Should_ReturnsResultNotfound_WhenCustomerDoesNotExist()
@@ -15,13 +19,17 @@ public class DeleteCustomerCommandHandlerTest
         // Arrange
         var customerId = new ObjectId();
         var command = new DeleteCustomerCommand(customerId);
-        _customerRepositoryMock.GetByIdAsync(command.Id).ReturnsNull();
-        var handler = new DeleteCustomerCommandHandler(_customerRepositoryMock);
+        _customerReadRepository.GetByIdAsync(command.Id).ReturnsNull();
+        var handler = new DeleteCustomerCommandHandler(_customerReadRepository, _customerWriteRepository, _messagePublisher);
 
         // Act
         Result result = await handler.Handle(command, default);
 
         // Assert
+        await _messagePublisher
+            .DidNotReceive()
+            .Publish(Arg.Any<CustomerDeletedEvent>());
+
         result.IsFailure.Should().BeTrue();
         result.Error.Should().BeEquivalentTo(CustomerErrors.NotFound(customerId));
     }
@@ -39,8 +47,8 @@ public class DeleteCustomerCommandHandlerTest
             Email = "jhon.doe@mail.com"
         };
 
-        _customerRepositoryMock.GetByIdAsync(command.Id).Returns(customer);
-        var handler = new DeleteCustomerCommandHandler(_customerRepositoryMock);
+        _customerReadRepository.GetByIdAsync(command.Id).Returns(customer);
+        var handler = new DeleteCustomerCommandHandler(_customerReadRepository, _customerWriteRepository, _messagePublisher);
 
         // Act
         Result result = await handler.Handle(command, default);
@@ -48,7 +56,11 @@ public class DeleteCustomerCommandHandlerTest
         // Assert
         result.IsSuccess.Should().BeTrue();
 
-        await _customerRepositoryMock
+        await _messagePublisher
+            .Received(1)
+            .Publish(Arg.Any<CustomerDeletedEvent>());
+
+        await _customerWriteRepository
             .Received(1)
             .DeleteAsync(Arg.Is<Customer>(x => x == customer));
     }

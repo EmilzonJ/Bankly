@@ -7,16 +7,16 @@ public static class AccountErrors
 {
     public static Error NegativeBalance(decimal balance) => Error.Conflict(
         "Accounts.NegativeBalance",
-        $"The account balance can't be negative: {balance}."
+        $"El saldo de la cuenta no puede ser negativo. Saldo actual: {balance}"
     );
 
     public static Error NotFound(ObjectId id) => Error.NotFound(
         "Accounts.NotFound",
-        $"The account with id {id} was not found."
+        $"La cuenta con id {id} no fue encontrada."
     );
 
     public static Error SameAliasExsists(string alias) => Error.Conflict(
         "Accounts.SameAliasExists",
-        $"You have an account with the same alias {alias}"
+        $"El cliente ya tiene una cuenta con el alias {alias}."
     );
 }

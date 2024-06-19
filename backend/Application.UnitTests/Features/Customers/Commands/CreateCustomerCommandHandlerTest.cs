@@ -5,7 +5,8 @@ namespace Application.UnitTests.Features.Customers.Commands;
 
 public class CreateCustomerCommandHandlerTest
 {
-    private readonly ICustomerRepository _customerRepositoryMock = Substitute.For<ICustomerRepository>();
+    private readonly ICustomerReadRepository _customerReadRepository = Substitute.For<ICustomerReadRepository>();
+    private readonly ICustomerWriteRepository _customerWriteRepository = Substitute.For<ICustomerWriteRepository>();
 
     [Fact(DisplayName = "Handle_Should_ReturnsConflictResult_WhenEmailIsAlreadyTaken")]
     public async Task Handle_Should_ReturnsConflictResult_WhenEmailIsAlreadyTaken()
@@ -14,15 +15,15 @@ public class CreateCustomerCommandHandlerTest
         const string email = "jhon.doe@email.com";
         var command = new CreateCustomerCommand("Jhon Doe", email);
 
-        _customerRepositoryMock.EmailExistsAsync(Arg.Any<string>()).Returns(true);
+        _customerReadRepository.EmailExistsAsync(Arg.Any<string>()).Returns(true);
 
-        var handler = new CreateCustomerCommandHandler(_customerRepositoryMock);
+        var handler = new CreateCustomerCommandHandler(_customerWriteRepository, _customerReadRepository);
 
         // Act
         var result = await handler.Handle(command, default);
 
         // Assert
-        await _customerRepositoryMock.Received(0).AddAsync(Arg.Any<Customer>());
+        await _customerWriteRepository.Received(0).AddAsync(Arg.Any<Customer>());
 
         result.IsFailure.Should().BeTrue();
         result.Error.Should().Be(CustomerErrors.EmailTaken(email));
@@ -34,15 +35,15 @@ public class CreateCustomerCommandHandlerTest
         // Arrange
         var command = new CreateCustomerCommand("Jhon Doe", "jhon.doe@email.com");
 
-        _customerRepositoryMock.EmailExistsAsync(Arg.Any<string>()).Returns(false);
+        _customerReadRepository.EmailExistsAsync(Arg.Any<string>()).Returns(false);
 
-        var handler = new CreateCustomerCommandHandler(_customerRepositoryMock);
+        var handler = new CreateCustomerCommandHandler(_customerWriteRepository, _customerReadRepository);
 
         // Act
         var result = await handler.Handle(command, default);
 
         // Assert
-        await _customerRepositoryMock.Received(1).AddAsync(Arg.Any<Customer>());
+        await _customerWriteRepository.Received(1).AddAsync(Arg.Any<Customer>());
 
         result.IsFailure.Should().BeFalse();
         result.Value.Should().BeOfType<string>();

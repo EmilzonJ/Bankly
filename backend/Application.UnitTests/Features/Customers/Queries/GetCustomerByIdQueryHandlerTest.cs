@@ -9,7 +9,7 @@ namespace Application.UnitTests.Features.Customers.Queries;
 
 public class GetCustomerByIdQueryHandlerTest
 {
-    private readonly ICustomerRepository _customerRepository = Substitute.For<ICustomerRepository>();
+    private readonly ICustomerReadRepository _customerReadRepository = Substitute.For<ICustomerReadRepository>();
 
     [Fact(DisplayName = "Handle_Should_ReturnsResultValue_WhenCustomerExists")]
     public async Task Handle_Should_ReturnsResultValue_WhenCustomerExists()
@@ -18,10 +18,10 @@ public class GetCustomerByIdQueryHandlerTest
         var customerId = new ObjectId();
         var customer = new Customer {Id = customerId, Name = "John Doe", Email = "jhon.due@mailc.com"};
 
-        _customerRepository.GetByIdAsync(customerId).Returns(customer);
+        _customerReadRepository.GetByIdAsync(customerId).Returns(customer);
 
         var query = new GetCustomerByIdQuery(customerId);
-        var handler = new GetCustomerByIdQueryHandler(_customerRepository);
+        var handler = new GetCustomerByIdQueryHandler(_customerReadRepository);
 
         // Act
         Result<CustomerResponse> result = await handler.Handle(query, default);
@@ -37,10 +37,10 @@ public class GetCustomerByIdQueryHandlerTest
         // Arrange
         var customerId = new ObjectId();
 
-        _customerRepository.GetByIdAsync(customerId).ReturnsNull();
+        _customerReadRepository.GetByIdAsync(customerId).ReturnsNull();
 
         var query = new GetCustomerByIdQuery(customerId);
-        var handler = new GetCustomerByIdQueryHandler(_customerRepository);
+        var handler = new GetCustomerByIdQueryHandler(_customerReadRepository);
 
         // Act
         Result<CustomerResponse> result = await handler.Handle(query, default);

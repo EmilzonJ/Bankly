@@ -9,7 +9,7 @@ namespace Application.UnitTests.Features.Customers.Queries;
 
 public class GetCustomersQueryHandlerTest
 {
-    private readonly ICustomerRepository _customerRepository = Substitute.For<ICustomerRepository>();
+    private readonly ICustomerReadRepository _customerReadRepository = Substitute.For<ICustomerReadRepository>();
 
     [Fact(DisplayName = "Handle_Should_ReturnsResultValueList_WhenCustomersExists")]
     public async Task Handle_Should_ReturnsResultValueList_WhenCustomersExists()
@@ -21,11 +21,11 @@ public class GetCustomersQueryHandlerTest
             new Customer {Id = new ObjectId(), Name = "Jane Doe", Email = "jane.doe@mail.com"}
         ];
 
-        _customerRepository.GetPagedAsync(1, 10, null, null, null).Returns(customers);
-        _customerRepository.CountAsync(null, null, null).Returns(2);
+        _customerReadRepository.GetPagedAsync(1, 10, null, null, null).Returns(customers);
+        _customerReadRepository.CountAsync(null, null, null).Returns(2);
 
         var query = new GetCustomersQuery(1, 10);
-        var handler = new GetCustomersQueryHandler(_customerRepository);
+        var handler = new GetCustomersQueryHandler(_customerReadRepository);
 
         // Act
         Result<PaginatedList<CustomerResponse>> result = await handler.Handle(query, default);
@@ -41,11 +41,11 @@ public class GetCustomersQueryHandlerTest
         // Arrange
         var customers = Array.Empty<Customer>().ToList();
 
-        _customerRepository.GetPagedAsync(1, 10, null, null, null).Returns(customers);
-        _customerRepository.CountAsync(null, null, null).Returns(0);
+        _customerReadRepository.GetPagedAsync(1, 10, null, null, null).Returns(customers);
+        _customerReadRepository.CountAsync(null, null, null).Returns(0);
 
         var query = new GetCustomersQuery(1, 10);
-        var handler = new GetCustomersQueryHandler(_customerRepository);
+        var handler = new GetCustomersQueryHandler(_customerReadRepository);
 
         // Act
         Result<PaginatedList<CustomerResponse>> result = await handler.Handle(query, default);
@@ -69,11 +69,11 @@ public class GetCustomersQueryHandlerTest
             }
         ];
 
-        _customerRepository.GetPagedAsync(1, 10, "John Doe", null, null).Returns(customers);
-        _customerRepository.CountAsync("John Doe", null, null).Returns(1);
+        _customerReadRepository.GetPagedAsync(1, 10, "John Doe", null, null).Returns(customers);
+        _customerReadRepository.CountAsync("John Doe", null, null).Returns(1);
 
         var query = new GetCustomersQuery(1, 10, "John Doe");
-        var handler = new GetCustomersQueryHandler(_customerRepository);
+        var handler = new GetCustomersQueryHandler(_customerReadRepository);
 
         // Act
         Result<PaginatedList<CustomerResponse>> result = await handler.Handle(query, default);

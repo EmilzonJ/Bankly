@@ -9,7 +9,8 @@ namespace Application.UnitTests.Features.Customers.Commands;
 
 public class UpdateCustomerCommandHandlerTest
 {
-    private readonly ICustomerRepository _customerRepository = Substitute.For<ICustomerRepository>();
+    private readonly ICustomerReadRepository _customerReadRepository = Substitute.For<ICustomerReadRepository>();
+    private readonly ICustomerWriteRepository _customerWriteRepository = Substitute.For<ICustomerWriteRepository>();
     private readonly IMessagePublisher _messagePublisher = Substitute.For<IMessagePublisher>();
 
     [Fact(DisplayName = "Handle_Should_ReturnsResultNotFound_WhenCustomerDoesntExists")]
@@ -18,7 +19,7 @@ public class UpdateCustomerCommandHandlerTest
         // Arrange
         var customerId = new ObjectId();
 
-        var handler = new UpdateCustomerCommandHandler(_customerRepository, _messagePublisher);
+        var handler = new UpdateCustomerCommandHandler(_customerWriteRepository, _customerReadRepository, _messagePublisher);
 
         var command = new UpdateCustomerCommand(
             customerId,
@@ -26,7 +27,7 @@ public class UpdateCustomerCommandHandlerTest
             "jhon.due.updated@mail.com"
         );
 
-        _customerRepository.GetByIdAsync(customerId).ReturnsNull();
+        _customerReadRepository.GetByIdAsync(customerId).ReturnsNull();
 
         // Act
         Result result = await handler.Handle(command, default);
@@ -58,11 +59,11 @@ public class UpdateCustomerCommandHandlerTest
             "jhon.updated@mail"
         );
 
-        var handler = new UpdateCustomerCommandHandler(_customerRepository, _messagePublisher);
+        var handler = new UpdateCustomerCommandHandler(_customerWriteRepository, _customerReadRepository, _messagePublisher);
 
-        _customerRepository.GetByIdAsync(customerId).Returns(customer);
+        _customerReadRepository.GetByIdAsync(customerId).Returns(customer);
 
-        _customerRepository.EmailExistsAsync(command.Email).Returns(true);
+        _customerReadRepository.EmailExistsAsync(command.Email).Returns(true);
 
         // Act
         Result result = await handler.Handle(command, default);
@@ -94,17 +95,17 @@ public class UpdateCustomerCommandHandlerTest
             "jhon.updated@mail"
         );
 
-        var handler = new UpdateCustomerCommandHandler(_customerRepository, _messagePublisher);
+        var handler = new UpdateCustomerCommandHandler(_customerWriteRepository, _customerReadRepository, _messagePublisher);
 
-        _customerRepository.GetByIdAsync(customerId).Returns(customer);
+        _customerReadRepository.GetByIdAsync(customerId).Returns(customer);
 
-        _customerRepository.EmailExistsAsync(command.Email).Returns(false);
+        _customerReadRepository.EmailExistsAsync(command.Email).Returns(false);
 
         // Act
         Result result = await handler.Handle(command, default);
 
         // Assert
-        await _customerRepository
+        await _customerWriteRepository
             .Received(1)
             .UpdateAsync(Arg.Is<Customer>(x =>
                 x.Id == customerId &&
@@ -147,16 +148,16 @@ public class UpdateCustomerCommandHandlerTest
             "jhon.updated@mail"
         );
 
-        var handler = new UpdateCustomerCommandHandler(_customerRepository, _messagePublisher);
+        var handler = new UpdateCustomerCommandHandler(_customerWriteRepository, _customerReadRepository, _messagePublisher);
 
-        _customerRepository.GetByIdAsync(customerId).Returns(customer);
-        _customerRepository.EmailExistsAsync(command.Email).Returns(false);
+        _customerReadRepository.GetByIdAsync(customerId).Returns(customer);
+        _customerReadRepository.EmailExistsAsync(command.Email).Returns(false);
 
         // Act
         Result result = await handler.Handle(command, default);
 
         // Assert
-        await _customerRepository
+        await _customerWriteRepository
             .Received(1)
             .UpdateAsync(Arg.Is<Customer>(x =>
                 x.Id == customerId &&
@@ -189,16 +190,16 @@ public class UpdateCustomerCommandHandlerTest
             "jhon.updated@mail"
         );
 
-        var handler = new UpdateCustomerCommandHandler(_customerRepository, _messagePublisher);
+        var handler = new UpdateCustomerCommandHandler(_customerWriteRepository, _customerReadRepository, _messagePublisher);
 
-        _customerRepository.GetByIdAsync(customerId).Returns(customer);
-        _customerRepository.EmailExistsAsync(command.Email).Returns(false);
+        _customerReadRepository.GetByIdAsync(customerId).Returns(customer);
+        _customerReadRepository.EmailExistsAsync(command.Email).Returns(false);
 
         // Act
         Result result = await handler.Handle(command, default);
 
         // Assert
-        await _customerRepository
+        await _customerWriteRepository
             .Received(1)
             .UpdateAsync(Arg.Is<Customer>(x =>
                 x.Id == customerId &&

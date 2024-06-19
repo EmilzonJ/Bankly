@@ -4,14 +4,14 @@ using Application.Features.Customers.Extensions;
 namespace Application.Features.Customers.CommandHandlers;
 
 public record CreateCustomerAccountCommandHandler(
-    ICustomerRepository CustomerRepository,
+    ICustomerReadRepository CustomerReadRepository,
     IAccountRepository AccountRepository
 ) : ICommandHandler<CreateCustomerAccountCommand, Result<string>>
 {
     public async ValueTask<Result<string>> Handle(CreateCustomerAccountCommand command,
         CancellationToken cancellationToken)
     {
-        var customer = await CustomerRepository.GetByIdAsync(command.CustomerId);
+        var customer = await CustomerReadRepository.GetByIdAsync(command.CustomerId);
         if (customer is null)
             return Result.Failure<string>(CustomerErrors.NotFound(command.CustomerId));
 

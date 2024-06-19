@@ -5,48 +5,48 @@ namespace Domain.Errors;
 
 public static class TransactionErrors
 {
-    public static Error InvalidAmount(decimal transactionAmount) => Error.Failure(
+    public static Error InvalidAmount(decimal transactionAmount) => Error.Validation(
         "Transactions.InvalidAmount",
-        $"The transaction amount {transactionAmount} is invalid."
+        $"El monto de la transacción {transactionAmount} es inválido."
     );
 
-    public static Error InsufficientBalance(decimal amount, decimal accountBalance) => Error.Failure(
+    public static Error InsufficientBalance(decimal amount, decimal accountBalance) => Error.Validation(
         "Transactions.InsufficientBalance",
-        $"The transaction amount {amount} is greater than the account balance {accountBalance}."
+        $"El monto de la transacción {amount} es mayor al saldo de la cuenta {accountBalance}."
     );
 
-    public static Error InvalidDescription => Error.Failure(
+    public static Error InvalidDescription => Error.Validation(
         "Transactions.InvalidDescription",
-        "The transaction description is invalid."
+        "La descripción de la transacción es inválida."
     );
 
     public static Error NotFound(ObjectId id) => Error.NotFound(
         "Transactions.NotFound",
-        $"The transaction with id {id} was not found."
+        $"La transacción con id {id} no fue encontrada."
     );
 
     public static Error DepositAccountNotFound(ObjectId accountId) => Error.NotFound(
         "Transactions.DepositAccountNotFound",
-        $"The account for the deposit transaction with id {accountId} was not found."
+        $"La cuenta para la transacción de depósito con id {accountId} no fue encontrada."
     );
 
     public static Error WithdrawalAccountNotFound(ObjectId accountId) => Error.NotFound(
         "Transactions.WithdrawalAccountNotFound",
-        $"The account for the withdrawal transaction with id {accountId} was not found."
+        $"La cuenta para la transacción de retiro con id {accountId} no fue encontrada."
     );
 
     public static Error TransferSourceAccountNotFound(ObjectId accountId) => Error.NotFound(
         "Transactions.TransferSourceAccountNotFound",
-        $"The source account for the transfer transaction with id {accountId} was not found."
+        $"La cuenta de origen para la transacción de transferencia con id {accountId} no fue encontrada."
     );
 
     public static Error TransferDestinationAccountNotFound(ObjectId accountId) => Error.NotFound(
         "Transactions.TransferDestinationAccountNotFound",
-        $"The destination account for the transfer transaction with id {accountId} was not found."
+        $"La cuenta de destino para la transacción de transferencia con id {accountId} no fue encontrada."
     );
 
     public static Error TransferToSameAccount() => Error.Conflict(
         "Transactions.TransferToSameAccount",
-        "The source and destination accounts for the transfer transaction are the same."
+        "La cuenta de origen y destino de la transacción de transferencia son iguales."
     );
 }

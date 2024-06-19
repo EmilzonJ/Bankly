@@ -5,12 +5,12 @@ using Application.Features.Customers.Queries;
 namespace Application.Features.Customers.QueryHandlers;
 
 public record GetCustomerByIdQueryHandler(
-    ICustomerRepository CustomerRepository
+    ICustomerReadRepository CustomerReadRepository
 ) : IQueryHandler<GetCustomerByIdQuery, Result<CustomerResponse>>
 {
     public async ValueTask<Result<CustomerResponse>> Handle(GetCustomerByIdQuery query, CancellationToken cancellationToken)
     {
-        var customer = await CustomerRepository.GetByIdAsync(query.Id);
+        var customer = await CustomerReadRepository.GetByIdAsync(query.Id);
 
         return customer?.ToResponse() ?? Result.Failure<CustomerResponse>(CustomerErrors.NotFound(query.Id));
     }

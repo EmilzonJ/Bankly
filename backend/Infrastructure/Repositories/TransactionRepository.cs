@@ -59,6 +59,7 @@ public class TransactionRepository(MongoDbContext context) : ITransactionReposit
 
         return await _transactions
             .Find(filter)
+            .SortByDescending(a => a.CreatedAt)
             .Skip((pageNumber - 1) * pageSize)
             .Limit(pageSize)
             .ToListAsync();
@@ -72,7 +73,7 @@ public class TransactionRepository(MongoDbContext context) : ITransactionReposit
     )
     {
         var builder = Builders<Transaction>.Filter;
-        var filter = builder.Empty;
+        var filter = CreateActiveFilter(builder.Empty);
 
         if (!string.IsNullOrWhiteSpace(reference))
             filter &= builder.Where(t => t.Id == ObjectId.Parse(reference));
@@ -90,7 +91,7 @@ public class TransactionRepository(MongoDbContext context) : ITransactionReposit
 
         filter &= builder.Gte(c => c.CreatedAt, startOfDay) & builder.Lte(c => c.CreatedAt, endOfDay);
 
-        return CreateActiveFilter(filter);
+        return filter;
     }
 
     private static FilterDefinition<Transaction> CreateActiveFilter(FilterDefinition<Transaction>? additionalFilter = null)

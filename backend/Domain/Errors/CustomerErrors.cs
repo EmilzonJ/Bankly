@@ -7,11 +7,11 @@ public static class CustomerErrors
 {
     public static Error EmailTaken(string email) => Error.Conflict(
         "Customers.EmailTaken",
-        $"The email '{email}' is already taken."
+        $"El email '{email}' ya está en uso."
     );
 
     public static Error NotFound(ObjectId id) => Error.NotFound(
         "Customers.NotFound",
-        $"The customer with id '{id}' was not found."
+        $"El cliente con el id '{id}' no fue encontrado."
     );
 }

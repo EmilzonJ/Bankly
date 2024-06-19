@@ -8,7 +8,7 @@ namespace Application.UnitTests.Features.Customers.Queries;
 
 public class GetCustomerAccountsQueryHandlerTest
 {
-    private readonly ICustomerRepository _customerRepository = Substitute.For<ICustomerRepository>();
+    private readonly ICustomerReadRepository _customerReadRepository = Substitute.For<ICustomerReadRepository>();
     private readonly IAccountRepository _accountRepository = Substitute.For<IAccountRepository>();
 
     [Fact(DisplayName = "Handle_Should_ReturnsResultNotFound_WhenCustomerDoesNotExist")]
@@ -18,9 +18,9 @@ public class GetCustomerAccountsQueryHandlerTest
         var customerId = new ObjectId();
         var query = new GetCustomerAccountsQuery(customerId);
 
-        _customerRepository.ExistsAsync(query.CustomerId).Returns(false);
+        _customerReadRepository.ExistsAsync(query.CustomerId).Returns(false);
 
-        var handler = new GetCustomerAccountsQueryHandler(_customerRepository, _accountRepository);
+        var handler = new GetCustomerAccountsQueryHandler(_customerReadRepository, _accountRepository);
 
         // Act
         Result<List<CustomerAccountResponse>> result = await handler.Handle(query, default);
@@ -40,10 +40,10 @@ public class GetCustomerAccountsQueryHandlerTest
         // Arrange
         var query = new GetCustomerAccountsQuery(new ObjectId());
 
-        _customerRepository.ExistsAsync(query.CustomerId).Returns(true);
+        _customerReadRepository.ExistsAsync(query.CustomerId).Returns(true);
         _accountRepository.GetAllByCustomerAsync(query.CustomerId).Returns([]);
 
-        var handler = new GetCustomerAccountsQueryHandler(_customerRepository, _accountRepository);
+        var handler = new GetCustomerAccountsQueryHandler(_customerReadRepository, _accountRepository);
 
         // Act
         Result<List<CustomerAccountResponse>> result = await handler.Handle(query, default);
@@ -74,10 +74,10 @@ public class GetCustomerAccountsQueryHandlerTest
             }
         };
 
-        _customerRepository.ExistsAsync(query.CustomerId).Returns(true);
+        _customerReadRepository.ExistsAsync(query.CustomerId).Returns(true);
         _accountRepository.GetAllByCustomerAsync(query.CustomerId).Returns(accounts);
 
-        var handler = new GetCustomerAccountsQueryHandler(_customerRepository, _accountRepository);
+        var handler = new GetCustomerAccountsQueryHandler(_customerReadRepository, _accountRepository);
 
         // Act
         Result<List<CustomerAccountResponse>> result = await handler.Handle(query, default);

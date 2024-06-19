@@ -7,13 +7,13 @@ using Domain.Collections;
 namespace Application.Features.Customers.QueryHandlers;
 
 public record GetCustomersQueryHandler(
-    ICustomerRepository CustomerRepository
+    ICustomerReadRepository CustomerReadRepository
 ) : IQueryHandler<GetCustomersQuery, Result<PaginatedList<CustomerResponse>>>
 {
     public async ValueTask<Result<PaginatedList<CustomerResponse>>> Handle(GetCustomersQuery query, CancellationToken cancellationToken)
     {
-        var totalCustomers = await CustomerRepository.CountAsync(query.Name, query.Email, query.RegisteredAt);
-        IEnumerable<Customer> customers = await CustomerRepository
+        var totalCustomers = await CustomerReadRepository.CountAsync(query.Name, query.Email, query.RegisteredAt);
+        IEnumerable<Customer> customers = await CustomerReadRepository
             .GetPagedAsync(
                 query.PageNumber,
                 query.PageSize,

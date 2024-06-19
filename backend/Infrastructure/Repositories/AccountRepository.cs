@@ -1,17 +1,21 @@
+using Application.Caching;
 using Domain.Collections;
 using Domain.Contracts;
 using Domain.Enums;
+using Infrastructure.Caching;
 using Infrastructure.MongoContext;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Infrastructure.Repositories;
 
-public class AccountRepository(MongoDbContext context) : IAccountRepository
+public class AccountRepository(
+    MongoDbContext context,
+    ICacheService cacheService
+) : IAccountRepository
 {
     private readonly IMongoCollection<Account> _accounts = context.Accounts;
     private readonly IMongoCollection<Transaction> _transactions = context.Transactions;
-    private readonly IMongoCollection<Customer> _customers = context.Customers;
 
     public async Task<Account?> GetByIdAsync(ObjectId id)
         => await _accounts.Find(CreateActiveFilter(Builders<Account>.Filter.Eq(a => a.Id, id))).FirstOrDefaultAsync();
@@ -53,6 +57,8 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
             t.SourceAccountId == account.Id && t.IsActive);
         var update = Builders<Transaction>.Update.Set(t => t.IsActive, false);
         await _transactions.UpdateManyAsync(filter, update);
+
+        await cacheService.RemoveByPrefixAsync(CacheKeyPrefixes.Transaction);
     }
 
     public async Task<bool> SameAliasExistsAsync(ObjectId customerId, string alias)
@@ -81,7 +87,7 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
     {
         var filter = CreateFilter(alias, customerName, createdAt);
 
-        return await _accounts.Find(CreateActiveFilter(filter))
+        return await _accounts.Find(filter)
             .SortByDescending(a => a.CreatedAt)
             .Skip((pageNumber - 1) * pageSize)
             .Limit(pageSize)
@@ -114,10 +120,10 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
         return filter;
     }
 
-    private FilterDefinition<Account> CreateFilter(string? alias, string? customerName, DateOnly? createAt)
+    private static FilterDefinition<Account> CreateFilter(string? alias, string? customerName, DateOnly? createAt)
     {
         var builder = Builders<Account>.Filter;
-        var filter = builder.Empty;
+        var filter = CreateActiveFilter(builder.Empty);
 
         if (!string.IsNullOrWhiteSpace(alias))
         {
@@ -136,6 +142,6 @@ public class AccountRepository(MongoDbContext context) : IAccountRepository
 
         filter &= builder.Gte(c => c.CreatedAt, startOfDay) & builder.Lte(c => c.CreatedAt, endOfDay);
 
-        return CreateActiveFilter(filter);
+        return filter;
     }
 }
