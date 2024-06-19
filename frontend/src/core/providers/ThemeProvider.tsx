@@ -4,7 +4,7 @@ import esEs from 'antd/locale/es_ES';
 
 const data = {
   borderRadius: 6,
-  colorPrimary: '#9E339F',
+  colorPrimary: '#1477FF',
 };
 
 function ThemeProvider({ children }: PropsWithChildren) {

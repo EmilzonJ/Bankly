@@ -25,7 +25,7 @@ function TransactionDetailPage() {
   };
 
   return (
-    <PageContainer title={transaction?.description}>
+    <PageContainer title={`Transacción - ${transaction?.description}`}>
       <TransactionDetailPresentation
         onSeeSourceAccount={onSeeSourceAccount}
         onSeeDestinationAccount={onSeeDestinationAccount}

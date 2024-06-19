@@ -147,7 +147,10 @@ function CustomerListPresentation({
           },
           formItemProps: {
             label: "Nombre",
-            rules: [{ type: "string" }],
+            rules: [
+              { type: "string" },
+              { required: true, message: "El nombre es requerido" },
+            ],
           },
         },
         {
@@ -160,7 +163,10 @@ function CustomerListPresentation({
           },
           formItemProps: {
             label: "Correo",
-            rules: [{ type: "email", message: "El correo no es válido" }],
+            rules: [
+              { type: "email", message: "El correo no es válido" },
+              { required: true, message: "El correo es requerido" },
+            ],
           },
         },
         {

@@ -27,19 +27,15 @@ function CustomerDetailPresentation({
   const [form] = useForm();
   const navigate = useNavigate();
 
-  const onSelectAccount = (
-    key: string,
-    account: Account
-  ) => {
+  const onSelectAccount = (key: string, account: Account) => {
     const actions: Record<string, () => void> = {
-      '1': () => {
+      "1": () => {
         navigate(`${Routes.ACCOUNTS_INDEX}/${account.id}`);
       },
     };
 
     actions[key]?.();
   };
-
 
   return (
     <>
@@ -109,6 +105,14 @@ function CustomerDetailPresentation({
           {
             title: "Alias",
             dataIndex: "alias",
+            formItemProps: {
+              rules: [
+                {
+                  required: true,
+                  message: "Alias para la cuenta es requerido",
+                },
+              ],
+            },
             width: 300,
           },
           {
@@ -119,7 +123,7 @@ function CustomerDetailPresentation({
               min: 0,
               precision: 2,
               customSymbol: "MXN ",
-            }
+            },
           },
           {
             editable: false,
@@ -128,25 +132,21 @@ function CustomerDetailPresentation({
             renderText: (_text, record) => accountTypesMap(record?.type),
           },
           {
-            title: 'Acciones',
-            dataIndex: 'option',
-            valueType: 'option',
-            align: 'center',
+            title: "Acciones",
+            dataIndex: "option",
+            valueType: "option",
+            align: "center",
             width: 200,
             render: (_, entity) => (
               <Dropdown
                 menu={{
                   items,
-                  onClick: (e) =>
-                    onSelectAccount(
-                      e.key,
-                      entity as Account
-                    ),
+                  onClick: (e) => onSelectAccount(e.key, entity as Account),
                 }}
               >
                 <EllipsisOutlined
                   style={{
-                    cursor: 'pointer',
+                    cursor: "pointer",
                   }}
                 />
               </Dropdown>
@@ -160,8 +160,8 @@ function CustomerDetailPresentation({
 
 const items: ItemType[] = [
   {
-    key: '1',
-    label: 'Ver detalle',
+    key: "1",
+    label: "Ver detalle",
     icon: <EyeOutlined />,
   },
 ];
