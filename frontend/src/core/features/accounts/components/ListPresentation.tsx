@@ -46,6 +46,7 @@ function AccountListPresentation({
 }: ListPresentationProps) {
   return (
     <ProTable<Partial<Account>>
+      scroll={{ y: 'calc(100vh - 450px)', x: 'max-content'}}
       loading={isLoading}
       onReset={() => {
         setFilters({});
@@ -79,6 +80,11 @@ function AccountListPresentation({
           alias: values.alias ?? "",
           createdAt: values.createdAt ?? "",
           customerName: values.customerName ?? "",
+        });
+
+        setPagination({
+          current: pagination.current,
+          pageSize: pagination.pageSize,
         });
       }}
       dataSource={data?.items || []}

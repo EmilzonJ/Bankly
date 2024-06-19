@@ -2,21 +2,21 @@ import {
   CreateCustomer,
   Customer,
   UpdateCustomer,
-} from '@/core/types/customer.type';
-import { Paginated } from '@/core/types/paginated.type';
+} from "@/core/types/customer.type";
+import { Paginated } from "@/core/types/paginated.type";
 import {
   DeleteOutlined,
   EditOutlined,
   EllipsisOutlined,
   EyeOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 import {
   EditableProTable,
   ProCoreActionType,
-} from '@ant-design/pro-components';
-import { Dropdown } from 'antd';
-import { useForm } from 'antd/es/form/Form';
-import { ItemType } from 'antd/es/menu/interface';
+} from "@ant-design/pro-components";
+import { Dropdown } from "antd";
+import { useForm } from "antd/es/form/Form";
+import { ItemType } from "antd/es/menu/interface";
 
 export type FilterState = {
   name?: string;
@@ -60,20 +60,21 @@ function CustomerListPresentation({
 
   return (
     <EditableProTable<Partial<Customer>>
+      scroll={{ y: "calc(100vh - 450px)", x: "max-content" }}
       recordCreatorProps={{
-        position: 'top',
+        position: "top",
         record: () => ({
-          id: 'create',
-          name: '',
-          email: '',
+          id: "create",
+          name: "",
+          email: "",
         }),
-        creatorButtonText: 'Crear nuevo cliente',
+        creatorButtonText: "Crear nuevo cliente",
       }}
       editable={{
         form,
-        type: 'multiple',
+        type: "multiple",
         onSave: async (rowKey, data) => {
-          if (rowKey === 'create') {
+          if (rowKey === "create") {
             await handleCreate({
               email: data.email as string,
               name: data.name as string,
@@ -117,58 +118,63 @@ function CustomerListPresentation({
         },
       }}
       cardBordered
-      rowKey='id'
+      rowKey="id"
       search={{
-        labelWidth: 'auto',
+        labelWidth: "auto",
       }}
       onSubmit={(values) => {
         setFilters({
-          name: values.name ?? '',
-          email: values.email ?? '',
-          registeredAt: values.registeredAt ?? '',
+          name: values.name ?? "",
+          email: values.email ?? "",
+          registeredAt: values.registeredAt ?? "",
+        });
+
+        setPagination({
+          current: pagination.current,
+          pageSize: pagination.pageSize,
         });
       }}
       value={data?.items || []}
       columns={[
         {
-          title: 'Nombre',
-          dataIndex: 'name',
+          title: "Nombre",
+          dataIndex: "name",
           filters: true,
           copyable: true,
-          valueType: 'text',
+          valueType: "text",
           fieldProps: {
-            placeholder: 'Ingrese un nombre',
+            placeholder: "Ingrese un nombre",
           },
           formItemProps: {
-            label: 'Nombre',
-            rules: [{ type: 'string' }],
+            label: "Nombre",
+            rules: [{ type: "string" }],
           },
         },
         {
-          title: 'Correo',
-          dataIndex: 'email',
+          title: "Correo",
+          dataIndex: "email",
           filters: true,
-          valueType: 'text',
+          valueType: "text",
           fieldProps: {
-            placeholder: 'Ingrese un email',
+            placeholder: "Ingrese un email",
           },
           formItemProps: {
-            label: 'Correo',
-            rules: [{ type: 'email', message: 'El correo no es válido' }],
+            label: "Correo",
+            rules: [{ type: "email", message: "El correo no es válido" }],
           },
         },
         {
-          title: 'Fecha de registro',
-          dataIndex: 'registeredAt',
-          valueType: 'date',
+          title: "Fecha de registro",
+          dataIndex: "registeredAt",
+          valueType: "date",
           filters: true,
           editable: false,
         },
         {
-          title: 'Acciones',
-          dataIndex: 'option',
-          valueType: 'option',
-          align: 'center',
+          title: "Acciones",
+          dataIndex: "option",
+          valueType: "option",
+          align: "center",
           width: 200,
           render: (_, entity, _2, action) => (
             <Dropdown
@@ -184,7 +190,7 @@ function CustomerListPresentation({
             >
               <EllipsisOutlined
                 style={{
-                  cursor: 'pointer',
+                  cursor: "pointer",
                 }}
               />
             </Dropdown>
@@ -197,18 +203,18 @@ function CustomerListPresentation({
 
 const items: ItemType[] = [
   {
-    key: '1',
-    label: 'Eliminar',
+    key: "1",
+    label: "Eliminar",
     icon: <DeleteOutlined />,
   },
   {
-    key: '2',
-    label: 'Editar',
+    key: "2",
+    label: "Editar",
     icon: <EditOutlined />,
   },
   {
-    key: '3',
-    label: 'Ver detalle',
+    key: "3",
+    label: "Ver detalle",
     icon: <EyeOutlined />,
   },
 ];

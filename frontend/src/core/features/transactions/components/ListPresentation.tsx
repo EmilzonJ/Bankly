@@ -7,10 +7,10 @@ import { Transaction } from "@/core/types/transaction.type";
 import {
   ArrowDownOutlined,
   ArrowUpOutlined,
-  EllipsisOutlined
+  EyeOutlined
 } from "@ant-design/icons";
 import {
-  EditableProTable
+  ProTable
 } from "@ant-design/pro-components";
 import { Badge } from "antd";
 import { transactionTypesMap } from "../../accounts/utils/transaction-types-map.util";
@@ -46,7 +46,8 @@ function TransactionListPresentation({
   refetch
 }: ListPresentationProps) {
   return (
-    <EditableProTable<Partial<Transaction>>
+    <ProTable<Partial<Transaction>>
+      scroll={{ y: 'calc(100vh - 450px)', x: 'max-content'}}
       loading={isLoading}
       onReset={() => {
         setFilters({});
@@ -81,27 +82,29 @@ function TransactionListPresentation({
           reference: values.reference ?? "",
           createdAt: values.createdAt ?? "",
         });
+
+        setPagination({
+          current: 1,
+          pageSize: pagination.pageSize
+        })
       }}
-      value={data?.items || []}
+      dataSource={data?.items || []}
       columns={[
         {
           title: "Referencia",
-          dataIndex: "id",
-          editable: false,
-          width: 300,
+          dataIndex: "reference",
+          editable: false
         },
         {
           title: "Descripción",
           dataIndex: "description",
           hideInSearch: true,
-          editable: false,
-          width: 300,
+          editable: false
         },
         {
           title: "Monto de la transacción",
           dataIndex: "amount",
           hideInSearch: true,
-          width: 300,
           render: (_, entity) => {
             if (entity.type === undefined) {
               return null;
@@ -172,11 +175,11 @@ function TransactionListPresentation({
           valueType: "option",
           width: 200,
           render: (_, entity) => (
-            <EllipsisOutlined
+            <EyeOutlined
               style={{
                 cursor: "pointer",
               }}
-              onClick={() => onSelectRow(entity.id!)}
+              onClick={() => onSelectRow(entity.reference!)}
             />
           ),
         },
