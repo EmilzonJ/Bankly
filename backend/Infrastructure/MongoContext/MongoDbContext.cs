@@ -1,3 +1,4 @@
+using Application.Features.Auth.Contracts;
 using Domain.Collections;
 using Domain.Enums;
 using Infrastructure.Settings;
@@ -13,14 +14,17 @@ namespace Infrastructure.MongoContext;
 public class MongoDbContext
 {
     private readonly IMongoDatabase _database;
+    private readonly IPasswordHasher _passwordHasher;
     private const string BasePathSeeder = "Seeders";
 
-    public MongoDbContext(IOptions<MongoDbSettings> settings)
+    public MongoDbContext(IOptions<MongoDbSettings> settings, IPasswordHasher passwordHasher)
     {
         var client = new MongoClient(settings.Value.ConnectionString);
         _database = client.GetDatabase(settings.Value.DatabaseName);
 
         ConfigureMongoDbMappings();
+
+        _passwordHasher = passwordHasher;
     }
 
     private static void ConfigureMongoDbMappings()
@@ -82,6 +86,7 @@ public class MongoDbContext
         Transactions.Indexes.CreateOne(new CreateIndexModel<Transaction>(createdAtIndexKeys));
     }
 
+    public IMongoCollection<User> Users => _database.GetCollection<User>(User.CollectionName);
     public IMongoCollection<Customer> Customers => _database.GetCollection<Customer>(Customer.CollectionName);
     public IMongoCollection<Account> Accounts => _database.GetCollection<Account>(Account.CollectionName);
     public IMongoCollection<Transaction> Transactions => _database.GetCollection<Transaction>(Transaction.CollectionName);
@@ -94,6 +99,15 @@ public class MongoDbContext
         var customerRecords = customerSeeder.GetRecordsAsync($"{BasePathSeeder}/Customers.csv");
 
         if (customerRecords.Count == 0) return;
+
+        var user = new User
+        {
+            Id = ObjectId.GenerateNewId(),
+            Email = "example@email.com",
+            Password = _passwordHasher.HashPassword("password123")
+        };
+
+        await Users.InsertOneAsync(user);
 
         customerRecords.ForEach(c => c.Id = ObjectId.GenerateNewId());
 

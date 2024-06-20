@@ -1,12 +1,17 @@
 using System.Reflection;
+using System.Text;
 using Application.Caching;
+using Application.Features.Auth.Contracts;
 using Domain.Contracts;
+using Infrastructure.Authentication;
 using Infrastructure.Caching;
 using Infrastructure.Consumers;
 using Infrastructure.MongoContext;
 using Infrastructure.Repositories;
 using Infrastructure.Settings;
+using Infrastructure.SettingsSetup;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
@@ -21,6 +26,7 @@ public static class ServicesInjection
         services.AddRepositories();
         services.AddCaching(configuration);
         services.AddRabbitMq(configuration);
+        services.AddJwtAuthentication();
     }
 
     private static void AddMongoDb(this IServiceCollection services, IConfiguration configuration)
@@ -75,5 +81,15 @@ public static class ServicesInjection
             busConfigurator.AddConsumer<CustomerEmailUpdatedConsumer>();
             busConfigurator.AddConsumer<CustomerDeletedConsumer>();
         });
+    }
+
+    private static void AddJwtAuthentication(this IServiceCollection services)
+    {
+        services.ConfigureOptions<JwtSettingsSetup>();
+        services.ConfigureOptions<JwtBearerSettingsSetup>();
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
     }
 }

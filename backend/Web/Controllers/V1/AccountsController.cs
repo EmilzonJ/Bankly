@@ -13,7 +13,6 @@ namespace Web.Controllers.V1;
 public class AccountsController(ISender sender) : BaseController
 {
     [HttpGet]
-    [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedList<AccountResponse>))]
     [ProducesErrorResponseType(typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -37,7 +36,6 @@ public class AccountsController(ISender sender) : BaseController
     }
 
     [HttpGet("{id}")]
-    [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesErrorResponseType(typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -53,7 +51,6 @@ public class AccountsController(ISender sender) : BaseController
     }
 
     [HttpGet("{id}/transactions")]
-    [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesErrorResponseType(typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -69,7 +66,6 @@ public class AccountsController(ISender sender) : BaseController
     }
 
     [HttpDelete("{id}")]
-    [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesErrorResponseType(typeof(ProblemDetails))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
