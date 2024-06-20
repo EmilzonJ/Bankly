@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using Web.Infrastructure;
 using Web.Settings;
 
@@ -33,7 +34,36 @@ public static class ServicesInjection
     private static void AddSwaggerService(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo {Title = "Bankly API", Version = "v1"});
+
+            // Define the BearerAuth scheme
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description =
+                    "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
     }
 
     private static void AddCorsService(this IServiceCollection services)

@@ -6,10 +6,13 @@ export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: fetchBaseQuery({
     baseUrl,
-    // prepareHeaders: (headers) => {
-    //   TODO: Add JWT
-    //   return headers;
-    // },
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   endpoints: () => ({}),
 });

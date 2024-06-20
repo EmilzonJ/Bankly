@@ -17,6 +17,7 @@ function ThemeProvider({ children }: PropsWithChildren) {
         },
       }}
       locale={esEs}
+
     >
       <App>{children}</App>
     </ConfigProvider>

@@ -14,6 +14,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Scrutor;
 
 namespace Infrastructure;
@@ -26,7 +27,7 @@ public static class ServicesInjection
         services.AddRepositories();
         services.AddCaching(configuration);
         services.AddRabbitMq(configuration);
-        services.AddJwtAuthentication();
+        services.AddJwtAuthentication(configuration);
     }
 
     private static void AddMongoDb(this IServiceCollection services, IConfiguration configuration)
@@ -83,12 +84,26 @@ public static class ServicesInjection
         });
     }
 
-    private static void AddJwtAuthentication(this IServiceCollection services)
+    private static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.ConfigureOptions<JwtSettingsSetup>();
-        services.ConfigureOptions<JwtBearerSettingsSetup>();
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+            options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["JwtSettings:Issuer"],
+                    ValidAudience = configuration["JwtSettings:Audience"],
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!))
+                };
+            }
+        );
 
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
     }
